@@ -5,11 +5,13 @@ let config = function($stateProvider, $urlRouterProvider){
 		.state('root', {
 			abstract: true,
 			templateUrl: 'templates/layout.html',
+			controller: 'LoginCtrl'
 
 		})
 		.state('root.dash', {
 			url: '/',
-			templateUrl: 'templates/dash.html'
+			templateUrl: 'templates/dash.html',
+
 		})
 		.state('root.login', {
 			url: '/login',

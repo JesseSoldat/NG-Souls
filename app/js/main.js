@@ -9,11 +9,13 @@ var config = function config($stateProvider, $urlRouterProvider) {
 
 	$stateProvider.state('root', {
 		abstract: true,
-		templateUrl: 'templates/layout.html'
+		templateUrl: 'templates/layout.html',
+		controller: 'LoginCtrl'
 
 	}).state('root.dash', {
 		url: '/',
 		templateUrl: 'templates/dash.html'
+
 	}).state('root.login', {
 		url: '/login',
 		templateUrl: 'templates/login.html',
@@ -38,17 +40,32 @@ Object.defineProperty(exports, '__esModule', {
 });
 var LoginCtrl = function LoginCtrl($scope, $state, LoginService) {
 
-	$scope.login = function (user) {
-		console.log(user);
-		LoginService.login(user);
+	$scope.login = function (userData) {
+
+		LoginService.login(userData);
+
+		firebase.auth().onAuthStateChanged(function (user) {
+			if (user) {
+				$state.go('root.dash');
+			} else {
+				console.log('No User');
+			}
+		});
 	};
 
-	$scope.register = function (user) {
-		console.log(user);
-		LoginService.register(user);
+	$scope.register = function (userData) {
+
+		LoginService.register(userData);
 	};
 
-	$scope.logout = function () {};
+	$scope.logout = function () {
+		firebase.auth().signOut().then(function () {
+			console.log('signOut');
+			$state.go('root.login');
+		}, function (error) {
+			console.log(error);
+		});
+	};
 };
 
 LoginCtrl.$inject = ['$scope', '$state', 'LoginService'];
