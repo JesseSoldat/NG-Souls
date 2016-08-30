@@ -7,10 +7,21 @@ let config = function($stateProvider, $urlRouterProvider){
 			templateUrl: 'templates/layout.html',
 
 		})
-		.state('root.login', {
+		.state('root.dash', {
 			url: '/',
-			templateUrl: 'templates/login.html'
-		});
+			templateUrl: 'templates/dash.html'
+		})
+		.state('root.login', {
+			url: '/login',
+			templateUrl: 'templates/login.html',
+			controller: 'LoginCtrl'
+		})
+		.state('root.register', {
+			url:'/register',
+			templateUrl: 'templates/register.html',
+			controller: 'LoginCtrl'
+		})
+;
 }
 
 config.$inject = ['$stateProvider', '$urlRouterProvider'];

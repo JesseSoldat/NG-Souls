@@ -6,14 +6,21 @@ import $ from 'jquery';
 
 import config from './config';
 
+// CTRL
+import LoginCtrl from './ctrl/login.ctrl';
 
-console.log('Hello, World');
+// SERVICE
+import LoginService from './services/login.service';
 
 
 
 angular
 	.module('app', ['ui.router', 'firebase'])
 	.config(config)
+
+	.controller('LoginCtrl', LoginCtrl)
+
+	.service('LoginService', LoginService)
 
 
 ;
