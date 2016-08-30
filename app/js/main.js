@@ -40,10 +40,12 @@ var LoginCtrl = function LoginCtrl($scope, $state, LoginService) {
 
 	$scope.login = function (user) {
 		console.log(user);
+		LoginService.login(user);
 	};
 
 	$scope.register = function (user) {
 		console.log(user);
+		LoginService.register(user);
 	};
 
 	$scope.logout = function () {};
@@ -93,6 +95,14 @@ var _servicesLoginService = require('./services/login.service');
 
 var _servicesLoginService2 = _interopRequireDefault(_servicesLoginService);
 
+var fireConfig = {
+  apiKey: "AIzaSyAw5uIZdlyPYjBuYoc8zRjbiv0-lxWANys",
+  authDomain: "playground-3f11f.firebaseapp.com",
+  databaseURL: "https://playground-3f11f.firebaseio.com",
+  storageBucket: ""
+};
+_firebase2['default'].initializeApp(fireConfig);
+
 _angular2['default'].module('app', ['ui.router', 'firebase']).config(_config2['default']).controller('LoginCtrl', _ctrlLoginCtrl2['default']).service('LoginService', _servicesLoginService2['default']);
 
 },{"./config":1,"./ctrl/login.ctrl":2,"./services/login.service":4,"angular":7,"angular-ui-router":5,"angularfire":9,"firebase":10,"jquery":12}],4:[function(require,module,exports){
@@ -105,9 +115,21 @@ var LoginService = function LoginService() {
 	this.login = login;
 	this.register = register;
 
-	function login(user) {};
+	function login(user) {
+		firebase.auth().signInWithEmailAndPassword(user.logEmail, user.logPass)["catch"](function (error) {
+			var errorCode = error.code;
+			var errorMessage = error.message;
+			console.log(errorMessage);
+		});
+	};
 
-	function register(user) {}
+	function register(user) {
+		firebase.auth().createUserWithEmailAndPassword(user.regEmail, user.regPass)["catch"](function (error) {
+			var errorCode = error.code;
+			var errorMessage = error.message;
+			console.log(errorMessage);
+		});
+	}
 };
 LoginService.$inject = [];
 
