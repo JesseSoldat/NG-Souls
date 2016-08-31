@@ -9,20 +9,20 @@ var config = function config($stateProvider, $urlRouterProvider) {
 
 	$stateProvider.state('root', {
 		abstract: true,
-		templateUrl: 'templates/layout.html',
+		templateUrl: 'templates/app-core/layout.html',
 		controller: 'LoginCtrl'
 
 	}).state('root.dash', {
 		url: '/',
-		templateUrl: 'templates/dash.html'
-
+		templateUrl: 'templates/app-core/dash.html',
+		controller: 'DashCtrl'
 	}).state('root.login', {
 		url: '/login',
-		templateUrl: 'templates/login.html',
+		templateUrl: 'templates/app-core/login.html',
 		controller: 'LoginCtrl'
 	}).state('root.register', {
 		url: '/register',
-		templateUrl: 'templates/register.html',
+		templateUrl: 'templates/app-core/register.html',
 		controller: 'LoginCtrl'
 	});
 };
@@ -38,6 +38,28 @@ module.exports = exports['default'];
 Object.defineProperty(exports, '__esModule', {
 	value: true
 });
+var DashCtrl = function DashCtrl($firebaseArray, $scope, $state) {
+
+	firebase.auth().onAuthStateChanged(function (user) {
+		if (user) {
+			console.log(user.uid);
+		} else {
+			console.log('No User DashCtrl');
+			$state.go('root.login');
+		}
+	});
+};
+DashCtrl.$inject = ['$firebaseArray', '$scope', '$state'];
+
+exports['default'] = DashCtrl;
+module.exports = exports['default'];
+
+},{}],3:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, '__esModule', {
+	value: true
+});
 var LoginCtrl = function LoginCtrl($scope, $state, LoginService) {
 
 	$scope.login = function (userData) {
@@ -48,7 +70,7 @@ var LoginCtrl = function LoginCtrl($scope, $state, LoginService) {
 			if (user) {
 				$state.go('root.dash');
 			} else {
-				console.log('No User');
+				console.log('No User Login Function');
 			}
 		});
 	};
@@ -73,56 +95,7 @@ LoginCtrl.$inject = ['$scope', '$state', 'LoginService'];
 exports['default'] = LoginCtrl;
 module.exports = exports['default'];
 
-},{}],3:[function(require,module,exports){
-'use strict';
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
-
-var _angular = require('angular');
-
-var _angular2 = _interopRequireDefault(_angular);
-
-require('angular-ui-router');
-
-var _firebase = require('firebase');
-
-var _firebase2 = _interopRequireDefault(_firebase);
-
-var _angularfire = require('angularfire');
-
-var _angularfire2 = _interopRequireDefault(_angularfire);
-
-var _jquery = require('jquery');
-
-var _jquery2 = _interopRequireDefault(_jquery);
-
-var _config = require('./config');
-
-var _config2 = _interopRequireDefault(_config);
-
-// CTRL
-
-var _ctrlLoginCtrl = require('./ctrl/login.ctrl');
-
-var _ctrlLoginCtrl2 = _interopRequireDefault(_ctrlLoginCtrl);
-
-// SERVICE
-
-var _servicesLoginService = require('./services/login.service');
-
-var _servicesLoginService2 = _interopRequireDefault(_servicesLoginService);
-
-var fireConfig = {
-  apiKey: "AIzaSyAw5uIZdlyPYjBuYoc8zRjbiv0-lxWANys",
-  authDomain: "playground-3f11f.firebaseapp.com",
-  databaseURL: "https://playground-3f11f.firebaseio.com",
-  storageBucket: ""
-};
-_firebase2['default'].initializeApp(fireConfig);
-
-_angular2['default'].module('app', ['ui.router', 'firebase']).config(_config2['default']).controller('LoginCtrl', _ctrlLoginCtrl2['default']).service('LoginService', _servicesLoginService2['default']);
-
-},{"./config":1,"./ctrl/login.ctrl":2,"./services/login.service":4,"angular":7,"angular-ui-router":5,"angularfire":9,"firebase":10,"jquery":12}],4:[function(require,module,exports){
+},{}],4:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -154,6 +127,59 @@ exports["default"] = LoginService;
 module.exports = exports["default"];
 
 },{}],5:[function(require,module,exports){
+'use strict';
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+var _angular = require('angular');
+
+var _angular2 = _interopRequireDefault(_angular);
+
+require('angular-ui-router');
+
+var _firebase = require('firebase');
+
+var _firebase2 = _interopRequireDefault(_firebase);
+
+var _angularfire = require('angularfire');
+
+var _angularfire2 = _interopRequireDefault(_angularfire);
+
+var _jquery = require('jquery');
+
+var _jquery2 = _interopRequireDefault(_jquery);
+
+var _appCoreConfig = require('./app-core/config');
+
+var _appCoreConfig2 = _interopRequireDefault(_appCoreConfig);
+
+// CTRL
+
+var _appCoreCtrlLoginCtrl = require('./app-core/ctrl/login.ctrl');
+
+var _appCoreCtrlLoginCtrl2 = _interopRequireDefault(_appCoreCtrlLoginCtrl);
+
+var _appCoreCtrlDashCtrl = require('./app-core/ctrl/dash.ctrl');
+
+var _appCoreCtrlDashCtrl2 = _interopRequireDefault(_appCoreCtrlDashCtrl);
+
+// SERVICE
+
+var _appCoreServicesLoginService = require('./app-core/services/login.service');
+
+var _appCoreServicesLoginService2 = _interopRequireDefault(_appCoreServicesLoginService);
+
+var fireConfig = {
+  apiKey: "AIzaSyAw5uIZdlyPYjBuYoc8zRjbiv0-lxWANys",
+  authDomain: "playground-3f11f.firebaseapp.com",
+  databaseURL: "https://playground-3f11f.firebaseio.com",
+  storageBucket: ""
+};
+_firebase2['default'].initializeApp(fireConfig);
+
+_angular2['default'].module('app', ['ui.router', 'firebase']).config(_appCoreConfig2['default']).controller('LoginCtrl', _appCoreCtrlLoginCtrl2['default']).controller('DashCtrl', _appCoreCtrlDashCtrl2['default']).service('LoginService', _appCoreServicesLoginService2['default']);
+
+},{"./app-core/config":1,"./app-core/ctrl/dash.ctrl":2,"./app-core/ctrl/login.ctrl":3,"./app-core/services/login.service":4,"angular":8,"angular-ui-router":6,"angularfire":10,"firebase":11,"jquery":13}],6:[function(require,module,exports){
 /**
  * State-based routing for AngularJS
  * @version v0.3.1
@@ -4730,7 +4756,7 @@ angular.module('ui.router.state')
   .filter('isState', $IsStateFilter)
   .filter('includedByState', $IncludedByStateFilter);
 })(window, window.angular);
-},{}],6:[function(require,module,exports){
+},{}],7:[function(require,module,exports){
 /**
  * @license AngularJS v1.5.8
  * (c) 2010-2016 Google, Inc. http://angularjs.org
@@ -36499,11 +36525,11 @@ $provide.value("$locale", {
 })(window);
 
 !window.angular.$$csp().noInlineStyle && window.angular.element(document.head).prepend('<style type="text/css">@charset "UTF-8";[ng\\:cloak],[ng-cloak],[data-ng-cloak],[x-ng-cloak],.ng-cloak,.x-ng-cloak,.ng-hide:not(.ng-hide-animate){display:none !important;}ng\\:form{display:block;}.ng-animate-shim{visibility:hidden;}.ng-anchor{position:absolute;}</style>');
-},{}],7:[function(require,module,exports){
+},{}],8:[function(require,module,exports){
 require('./angular');
 module.exports = angular;
 
-},{"./angular":6}],8:[function(require,module,exports){
+},{"./angular":7}],9:[function(require,module,exports){
 /*!
  * AngularFire is the officially supported AngularJS binding for Firebase. Firebase
  * is a full backend so you don't need servers to build your Angular app. AngularFire
@@ -38771,7 +38797,7 @@ if ( typeof Object.getPrototypeOf !== "function" ) {
     }
 })();
 
-},{}],9:[function(require,module,exports){
+},{}],10:[function(require,module,exports){
 // Make sure dependencies are loaded on the window
 require('angular');
 require('firebase');
@@ -38782,7 +38808,7 @@ require('./dist/angularfire');
 // Export the module name from the Angular module
 module.exports = 'firebase';
 
-},{"./dist/angularfire":8,"angular":7,"firebase":10}],10:[function(require,module,exports){
+},{"./dist/angularfire":9,"angular":8,"firebase":11}],11:[function(require,module,exports){
 /**
  *  Firebase libraries for browser - npm package.
  *
@@ -38793,7 +38819,7 @@ module.exports = 'firebase';
 require('./firebase');
 module.exports = firebase;
 
-},{"./firebase":11}],11:[function(require,module,exports){
+},{"./firebase":12}],12:[function(require,module,exports){
 (function (global){
 /*! @license Firebase v3.3.0
     Build: 3.3.0-rc.7
@@ -39374,7 +39400,7 @@ ta.STATE_CHANGED="state_changed";ua.RUNNING="running";ua.PAUSED="paused";ua.SUCC
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 
-},{}],12:[function(require,module,exports){
+},{}],13:[function(require,module,exports){
 /*!
  * jQuery JavaScript Library v2.2.4
  * http://jquery.com/
@@ -49190,7 +49216,7 @@ if ( !noGlobal ) {
 return jQuery;
 }));
 
-},{}]},{},[3])
+},{}]},{},[5])
 
 
 //# sourceMappingURL=main.js.map

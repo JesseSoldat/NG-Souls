@@ -9,7 +9,7 @@ let LoginCtrl = function($scope, $state, LoginService){
 				$state.go('root.dash');
 			}
 			else {
-				console.log('No User');
+				console.log('No User Login Function');
 			}
 		})
 	}
@@ -23,7 +23,7 @@ let LoginCtrl = function($scope, $state, LoginService){
 		firebase.auth().signOut().then(function(){
 			console.log('signOut');
 			$state.go('root.login');
-			
+
 		}, function(error){
 			console.log(error);
 		});

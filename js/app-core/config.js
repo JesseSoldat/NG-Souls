@@ -4,23 +4,23 @@ let config = function($stateProvider, $urlRouterProvider){
 	$stateProvider
 		.state('root', {
 			abstract: true,
-			templateUrl: 'templates/layout.html',
+			templateUrl: 'templates/app-core/layout.html',
 			controller: 'LoginCtrl'
 
 		})
 		.state('root.dash', {
 			url: '/',
-			templateUrl: 'templates/dash.html',
-
+			templateUrl: 'templates/app-core/dash.html',
+			controller: 'DashCtrl'
 		})
 		.state('root.login', {
 			url: '/login',
-			templateUrl: 'templates/login.html',
+			templateUrl: 'templates/app-core/login.html',
 			controller: 'LoginCtrl'
 		})
 		.state('root.register', {
 			url:'/register',
-			templateUrl: 'templates/register.html',
+			templateUrl: 'templates/app-core/register.html',
 			controller: 'LoginCtrl'
 		})
 ;
