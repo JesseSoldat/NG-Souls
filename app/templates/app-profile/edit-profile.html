@@ -1,1 +1,15 @@
 <h3>Edit Profile</h3>
+
+
+<div>
+	<form ng-submit="addProfile(user)">
+		<input type="text" placeholder="First Name" ng-model="user.fName" required="">
+		<input type="text" placeholder="Last Name" ng-model="user.lName" required="">
+		<input type="text" placeholder="Address" ng-model="user.address" required="">
+		<input type="text" placeholder="City" ng-model="user.city" required="">
+		<input type="text" placeholder="State" ng-model="user.state" required="">
+		<input type="text" placeholder="Zip Code" ng-model="user.zip" required="">
+		<input type="text" placeholder="Country" ng-model="user.country" required="">
+		<button>Submit</button>
+	</form>
+</div>
