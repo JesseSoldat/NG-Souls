@@ -5,7 +5,8 @@ let ProfileCtrl = function($state, $scope, ProfileService){
 	firebase.auth().onAuthStateChanged(function(user){
 		if(user){
 			currentUser = ProfileService.getProfile(user);
-		
+			
+			$scope.data = currentUser;
 		} else {
 
 		}

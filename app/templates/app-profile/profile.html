@@ -1,3 +1,14 @@
 <h3>Profile</h3>
 
+<div ng-repeat="d in data">
+	<h4>{{d.fName}} {{d.lName}}</h4>
+	<h4>{{d.address}}</h4>
+	<h4>{{d.city}}</h4>
+	<h4>{{d.state}}</h4>
+	<h4>{{d.zip}}</h4>
+	<h4>{{d.country}}</h4>
+
+</div>
+
+
 <button ng-click="editProfile()">Edit Profile</button>

@@ -171,6 +171,16 @@ Object.defineProperty(exports, '__esModule', {
 });
 var EditProfileCtrl = function EditProfileCtrl($scope, $state, ProfileService) {
 
+	var currentUser = undefined;
+
+	firebase.auth().onAuthStateChanged(function (user) {
+		if (user) {
+			currentUser = ProfileService.getProfile(user);
+
+			$scope.data = currentUser;
+		}
+	});
+
 	$scope.addProfile = function (user) {
 
 		ProfileService.addProfile(user);
@@ -194,6 +204,8 @@ var ProfileCtrl = function ProfileCtrl($state, $scope, ProfileService) {
 	firebase.auth().onAuthStateChanged(function (user) {
 		if (user) {
 			currentUser = ProfileService.getProfile(user);
+
+			$scope.data = currentUser;
 		} else {}
 	});
 
@@ -245,7 +257,11 @@ var ProfileService = function ProfileService($firebaseArray, $state) {
 	this.addProfile = addProfile;
 
 	function getProfile(user) {
-		console.log(user.uid);
+
+		var ref = firebase.database().ref('users/' + user.uid);
+		var array = $firebaseArray(ref);
+
+		return array;
 	}
 
 	function addProfile(userData) {

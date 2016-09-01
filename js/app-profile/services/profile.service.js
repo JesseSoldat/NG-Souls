@@ -4,8 +4,14 @@ let ProfileService = function($firebaseArray, $state){
 	this.addProfile = addProfile;
 
 	function getProfile(user){
-		console.log(user.uid);
+		
+		let ref = firebase.database().ref('users/' + user.uid);
+		let array = $firebaseArray(ref);
+		
+		return array;
 	}
+
+
 
 	function addProfile(userData){
 		console.log(userData);
