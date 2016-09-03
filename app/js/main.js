@@ -8,6 +8,8 @@ var AddBossCtrl = function AddBossCtrl($scope, $state, BossesService) {
 
 	$scope.addBoss = function (boss) {
 		BossesService.addBosses(boss);
+
+		$state.go('root.bosses');
 	};
 };
 AddBossCtrl.$inject = ['$scope', '$state', 'BossesService'];
@@ -27,23 +29,8 @@ var BossCtrl = function BossCtrl($scope, $state, $stateParams, BossesService) {
 
 	var bossArray = BossesService.getBoss(id);
 
-	console.log(bossArray);
 	$scope.bossid = id;
 	$scope.boss = bossArray;
-
-	// let counter = function(){
-	// 	if(bossArray > 0){
-	// 		for(let i = 1; i < bossArray.length; i++){
-	// 			console.log('counter');
-	// 			console.log(bossArray[i].name);
-	// 		}
-	// 	} else {
-	// 		setTimeout(function(){
-	// 			counter();
-	// 		}, 500);
-	// 	}
-	// }
-	// counter();
 };
 BossCtrl.$inject = ['$scope', '$state', '$stateParams', 'BossesService'];
 
@@ -129,7 +116,7 @@ var BossesService = function BossesService($firebaseArray, $firebaseObject) {
 	}
 
 	function addBosses(boss) {
-		console.log(boss);
+
 		array.$add({
 			name: boss.name,
 			url: boss.img
@@ -340,6 +327,10 @@ var EditProfileCtrl = function EditProfileCtrl($scope, $state, ProfileService) {
 
 		ProfileService.addProfile(user);
 	};
+
+	$scope.editProfile = function (userData) {
+		ProfileService.editProfile(userData);
+	};
 };
 EditProfileCtrl.$inject = ['$scope', '$state', 'ProfileService'];
 
@@ -410,9 +401,9 @@ var ProfileService = function ProfileService($firebaseArray, $state) {
 
 	this.getProfile = getProfile;
 	this.addProfile = addProfile;
+	this.editProfile = editProfile;
 
 	function getProfile(user) {
-
 		var ref = firebase.database().ref('users/' + user.uid);
 		var array = $firebaseArray(ref);
 
@@ -420,7 +411,6 @@ var ProfileService = function ProfileService($firebaseArray, $state) {
 	}
 
 	function addProfile(userData) {
-		console.log(userData);
 		var user = firebase.auth().currentUser;
 
 		var ref = firebase.database().ref('users/' + user.uid);
@@ -438,6 +428,38 @@ var ProfileService = function ProfileService($firebaseArray, $state) {
 			zip: userData.zip,
 			country: userData.country
 		});
+	}
+
+	function editProfile(userData) {
+		var user = firebase.auth().currentUser;
+
+		var ref = firebase.database().ref('users/' + user.uid);
+
+		var array = $firebaseArray(ref);
+
+		checkData();
+
+		function checkData() {
+			if (array.length > 0) {
+				var item = array.$getRecord(userData.$id);
+				// console.log('Checked Data');
+				item.fName = userData.fName;
+				item.lName = userData.lName;
+				item.address = userData.address;
+				item.city = userData.city;
+				item.state = userData.state;
+				item.zip = userData.zip;
+				item.country = userData.country;
+				array.$save(item).then(function () {
+					// console.log('Saved Item');
+					$state.go('root.profile');
+				});
+			} else {
+				setTimeout(function () {
+					checkData();
+				}, 100);
+			}
+		}
 	}
 };
 ProfileService.$inject = ['$firebaseArray', '$state'];

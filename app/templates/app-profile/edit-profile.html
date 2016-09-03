@@ -1,4 +1,4 @@
-<div ng-show="data.length <= 0">
+<div ng-show="data.length <= 0" class="layoutForm">
 	<h3>Add Profile</h3>
 	<form ng-submit="addProfile(user)">
 		<input type="text" placeholder="First Name" ng-model="user.fName" required="">
@@ -13,16 +13,16 @@
 </div>
 
 
-<div ng-show="data.length > 0">
+<div ng-show="data.length > 0" class="layoutForm" ng-repeat="d in data">
 	<h3>Edit Profile</h3>
-	<form ng-submit="editProfile(user)">
-		<input type="text" placeholder="First Name" ng-model="user.fName" required="">
-		<input type="text" placeholder="Last Name" ng-model="user.lName" required="">
-		<input type="text" placeholder="Address" ng-model="user.address" required="">
-		<input type="text" placeholder="City" ng-model="user.city" required="">
-		<input type="text" placeholder="State" ng-model="user.state" required="">
-		<input type="text" placeholder="Zip Code" ng-model="user.zip" required="">
-		<input type="text" placeholder="Country" ng-model="user.country" required="">
+	<form ng-submit="editProfile(d)">
+		<input type="text" placeholder="First Name" ng-model="d.fName" required="">
+		<input type="text" placeholder="Last Name" ng-model="d.lName" required="">
+		<input type="text" placeholder="Address" ng-model="d.address" required="">
+		<input type="text" placeholder="City" ng-model="d.city" required="">
+		<input type="text" placeholder="State" ng-model="d.state" required="">
+		<input type="text" placeholder="Zip Code" ng-model="d.zip" required="">
+		<input type="text" placeholder="Country" ng-model="d.country" required="">
 		<button>Submit</button>
 	</form>
 </div>

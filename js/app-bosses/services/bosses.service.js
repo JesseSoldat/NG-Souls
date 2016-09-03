@@ -21,7 +21,7 @@ let BossesService = function($firebaseArray, $firebaseObject){
 	}
 
 	function addBosses(boss){
-		console.log(boss);
+	
 		array.$add({
 			name: boss.name,
 			url: boss.img

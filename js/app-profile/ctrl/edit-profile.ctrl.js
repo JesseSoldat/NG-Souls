@@ -14,6 +14,10 @@ let EditProfileCtrl = function($scope, $state, ProfileService){
 
 		ProfileService.addProfile(user);
 	}
+
+	$scope.editProfile = function(userData){
+		ProfileService.editProfile(userData)
+	}
 };
 EditProfileCtrl.$inject = ['$scope', '$state', 'ProfileService'];
 
