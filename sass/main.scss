@@ -1,27 +1,83 @@
 
 @import 'font-awesome';
+@import 'foundation';
 
 body {
-  background: #e2ebf3;
+  background: #D2D2C9;
 }
+// SITE LAYOUT
+
+.layoutForm {
+	width: 80%;
+	margin: 0 auto;
+	margin-top: 4%;
+}
+.layoutBtns {
+	margin-left: 5%;
+
+	button {
+		margin-right: 1%;
+	}
+}
+
+
+
 // LAYOUT
-#navLinks > li {
-	list-style: none;
-	display: inline-block;
-	margin-right: 3%;
+#navLinks {
+	margin: 2% 5%;
+
+	li {
+		list-style: none;
+		display: inline-block;
+		margin-right: 5%;	
+	}
 }
+// DASH
+#dashBackground {
+	background-image: url('../img/darkSoulsBackground.jpg');
+	width: 100%;
+	background-size: 100%;
+	background-repeat: no-repeat;
+	height: 900px;
+}
+
+//PROFILE
+.profileWrapper {
+	width: 80%;
+	margin: 0 auto;
+	margin-top: 4%;
+
+}
+.profileInfo {
+	width: 40%;
+	h4 {
+		line-spacing: 1.5em;
+	}
+}
+.profileImg {
+	width: 40%;
+}
+
 
 // BOSSES
 .bosses {
 	display: inline-block;
-	width: 28%;
-	margin: 2%;
+	width: 30%;
+	margin: 1.5%;
 
 	h4 {
 		text-align: center;
+		font-size: 1.1em;
+
 	}
 	img {
 	width: 100%;
 	}
+}
+
+//BOSS
+.singleBoss {
+	margin: 0 auto;
+	width: 90%;
 }
 

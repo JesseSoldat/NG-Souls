@@ -1,14 +1,13 @@
+
 <nav>
-	<h1>Dark Souls 3</h1>
-	<div>
-		<ul id="navLinks">
+	<ul id="navLinks">
 			<li><a href="#/dash">Dash</a></li>
 			<li><a href="#/login">Login</a></li>
 			<li><a href="#/profile">Profile</a></li>
-			<li><a href="#/bosses">Bosses</a></li>
+			<li ><a href="#/bosses">Bosses</a></li>
 			<li><a href="#" ng-click="logout()">Logout</a></li>
-		</ul>
-	</div>
+			<li ng-show=""><a href="#/dash"></a></li>
+		</ul>	
 </nav>
 
 <div ui-view></div>

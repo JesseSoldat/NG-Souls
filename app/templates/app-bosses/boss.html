@@ -1,12 +1,25 @@
-<h1>Boss</h1>
 
+
+<!-- RETURN $firebaseArray -->
 <!-- <h4>{{boss[0].$value}}</h4>
 <img ng-src="{{boss[1].$value}}"> -->
-<h4>{{boss.name}}</h4>
-<img ng-src="{{boss.url}}">
 
-<!-- <div ng-repeat="b in boss">
-<h4>{{b.$value}}</h4>
-</div> -->
+
+<!-- RETURN $firebaseObject -->
+<div class="singleBoss">
+	<h1>Boss</h1>
+	<hr>
+	<h4>{{boss.name}}</h4>
+	<img ng-src="{{boss.url}}">	
+
+</div>
+
+
+
 <hr>
-<h4>{{bossid}}</h4>
+<div class="layoutBtns">
+	<button>Edit</button>
+	<button class="alert button">Delete</button>	
+</div>
+
+<!-- <h4>{{bossid}}</h4> -->

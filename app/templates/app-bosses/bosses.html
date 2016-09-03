@@ -1,10 +1,17 @@
-<h1>Bosses</h1>
+<div class="singleBoss">
+	<h1 >Bosses</h1>
 
-<div class="bosses" ng-repeat="boss in bosses">
-	<a href="#/boss/{{boss.$id}}">
-		<h4>{{boss.name}}</h4>
-		<img ng-src="{{boss.url}}">
-	</a>
+	<hr>
+
+	<div class="bosses" ng-repeat="boss in bosses">
+		<a href="#/boss/{{boss.$id}}">
+			<h4>{{boss.name}}</h4>
+			<img ng-src="{{boss.url}}">
+		</a>
+	</div>
+	<br><br>
+	<div>
+		<button ng-click="addBoss()">Add a Boss</button>	
+	</div>	
 </div>
-<br><br>
-<button ng-click="addBoss()">Add a Boss</button>
+
