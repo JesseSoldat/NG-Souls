@@ -31,6 +31,12 @@ var BossCtrl = function BossCtrl($scope, $state, $stateParams, BossesService) {
 
 	$scope.bossid = id;
 	$scope.boss = bossArray;
+
+	$scope.editBoss = function (boss) {
+		$state.go('root.editBoss', { boss: boss });
+	};
+
+	$scope.deleteBoss = function (boss) {};
 };
 BossCtrl.$inject = ['$scope', '$state', '$stateParams', 'BossesService'];
 
@@ -64,6 +70,29 @@ module.exports = exports['default'];
 },{}],4:[function(require,module,exports){
 'use strict';
 
+Object.defineProperty(exports, '__esModule', {
+	value: true
+});
+var EditBossCtrl = function EditBossCtrl($scope, BossesService, $stateParams) {
+
+	var bossId = $stateParams.boss;
+
+	var bossData = BossesService.getBoss(bossId);
+	$scope.boss = bossData;
+
+	$scope.editBoss = function (boss) {
+
+		BossesService.editBoss(boss);
+	};
+};
+EditBossCtrl.$inject = ['$scope', 'BossesService', '$stateParams'];
+
+exports['default'] = EditBossCtrl;
+module.exports = exports['default'];
+
+},{}],5:[function(require,module,exports){
+'use strict';
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
 var _angular = require('angular');
@@ -82,23 +111,29 @@ var _ctrlAddBossCtrl = require('./ctrl/add-boss.ctrl');
 
 var _ctrlAddBossCtrl2 = _interopRequireDefault(_ctrlAddBossCtrl);
 
+var _ctrlEditBossCtrl = require('./ctrl/edit-boss.ctrl');
+
+var _ctrlEditBossCtrl2 = _interopRequireDefault(_ctrlEditBossCtrl);
+
 var _servicesBossesService = require('./services/bosses.service');
 
 var _servicesBossesService2 = _interopRequireDefault(_servicesBossesService);
 
-_angular2['default'].module('app.bosses', []).controller('BossesCtrl', _ctrlBossesCtrl2['default']).controller('BossCtrl', _ctrlBossCtrl2['default']).controller('AddBossCtrl', _ctrlAddBossCtrl2['default']).service('BossesService', _servicesBossesService2['default']);
+_angular2['default'].module('app.bosses', []).controller('BossesCtrl', _ctrlBossesCtrl2['default']).controller('BossCtrl', _ctrlBossCtrl2['default']).controller('AddBossCtrl', _ctrlAddBossCtrl2['default']).controller('EditBossCtrl', _ctrlEditBossCtrl2['default']).service('BossesService', _servicesBossesService2['default']);
 
-},{"./ctrl/add-boss.ctrl":1,"./ctrl/boss.ctrl":2,"./ctrl/bosses.ctrl":3,"./services/bosses.service":5,"angular":18}],5:[function(require,module,exports){
+},{"./ctrl/add-boss.ctrl":1,"./ctrl/boss.ctrl":2,"./ctrl/bosses.ctrl":3,"./ctrl/edit-boss.ctrl":4,"./services/bosses.service":6,"angular":19}],6:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
 	value: true
 });
-var BossesService = function BossesService($firebaseArray, $firebaseObject) {
+var BossesService = function BossesService($firebaseArray, $firebaseObject, $state) {
 
 	this.getBosses = getBosses;
 	this.getBoss = getBoss;
 	this.addBosses = addBosses;
+	this.editBoss = editBoss;
+	this.deleteBoss = deleteBoss;
 
 	var ref = firebase.database().ref('bosses');
 	var array = $firebaseArray(ref);
@@ -122,13 +157,32 @@ var BossesService = function BossesService($firebaseArray, $firebaseObject) {
 			url: boss.img
 		});
 	}
+
+	function editBoss(boss) {
+		var ref = firebase.database().ref('bosses/' + boss.$id);
+
+		var object = $firebaseObject(ref);
+
+		object.name = boss.name;
+		object.url = boss.url;
+		object.$save().then(function (ref) {
+			ref.key === boss.$id;
+			$state.go('root.bosses');
+		}, function (error) {
+			console.log("Error:", error);
+		});
+	}
+
+	function deleteBoss(boss) {
+		console.log(boss);
+	}
 };
-BossesService.$inject = ['$firebaseArray', '$firebaseObject'];
+BossesService.$inject = ['$firebaseArray', '$firebaseObject', '$state'];
 
 exports['default'] = BossesService;
 module.exports = exports['default'];
 
-},{}],6:[function(require,module,exports){
+},{}],7:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -174,6 +228,10 @@ var config = function config($stateProvider, $urlRouterProvider) {
 		url: '/addboss',
 		controller: 'AddBossCtrl',
 		templateUrl: 'templates/app-bosses/add-boss.html'
+	}).state('root.editBoss', {
+		url: '/editboss/:boss',
+		controller: 'EditBossCtrl',
+		templateUrl: 'templates/app-bosses/edit-boss.html'
 	});
 };
 
@@ -182,7 +240,7 @@ config.$inject = ['$stateProvider', '$urlRouterProvider'];
 exports['default'] = config;
 module.exports = exports['default'];
 
-},{}],7:[function(require,module,exports){
+},{}],8:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -191,9 +249,7 @@ Object.defineProperty(exports, '__esModule', {
 var DashCtrl = function DashCtrl($firebaseArray, $scope, $state) {
 
 	firebase.auth().onAuthStateChanged(function (user) {
-		if (user) {
-			console.log(user.uid);
-		} else {
+		if (user) {} else {
 			console.log('No User DashCtrl');
 			$state.go('root.login');
 		}
@@ -204,7 +260,7 @@ DashCtrl.$inject = ['$firebaseArray', '$scope', '$state'];
 exports['default'] = DashCtrl;
 module.exports = exports['default'];
 
-},{}],8:[function(require,module,exports){
+},{}],9:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -245,7 +301,7 @@ LoginCtrl.$inject = ['$scope', '$state', 'LoginService'];
 exports['default'] = LoginCtrl;
 module.exports = exports['default'];
 
-},{}],9:[function(require,module,exports){
+},{}],10:[function(require,module,exports){
 'use strict';
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
@@ -274,7 +330,7 @@ var _servicesLoginService2 = _interopRequireDefault(_servicesLoginService);
 
 _angular2['default'].module('app.core', ['ui.router']).config(_config2['default']).controller('LoginCtrl', _ctrlLoginCtrl2['default']).controller('DashCtrl', _ctrlDashCtrl2['default']).service('LoginService', _servicesLoginService2['default']);
 
-},{"./config":6,"./ctrl/dash.ctrl":7,"./ctrl/login.ctrl":8,"./services/login.service":10,"angular":18,"angular-ui-router":16}],10:[function(require,module,exports){
+},{"./config":7,"./ctrl/dash.ctrl":8,"./ctrl/login.ctrl":9,"./services/login.service":11,"angular":19,"angular-ui-router":17}],11:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -305,7 +361,7 @@ LoginService.$inject = [];
 exports["default"] = LoginService;
 module.exports = exports["default"];
 
-},{}],11:[function(require,module,exports){
+},{}],12:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -337,7 +393,7 @@ EditProfileCtrl.$inject = ['$scope', '$state', 'ProfileService'];
 exports['default'] = EditProfileCtrl;
 module.exports = exports['default'];
 
-},{}],12:[function(require,module,exports){
+},{}],13:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -364,7 +420,7 @@ ProfileCtrl.$inject = ['$state', '$scope', 'ProfileService'];
 exports['default'] = ProfileCtrl;
 module.exports = exports['default'];
 
-},{}],13:[function(require,module,exports){
+},{}],14:[function(require,module,exports){
 'use strict';
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
@@ -391,7 +447,7 @@ var _servicesProfileService2 = _interopRequireDefault(_servicesProfileService);
 
 _angular2['default'].module('app.profile', []).controller('ProfileCtrl', _ctrlProfileCtrl2['default']).controller('EditProfileCtrl', _ctrlEditProfileCtrl2['default']).service('ProfileService', _servicesProfileService2['default']);
 
-},{"./ctrl/edit-profile.ctrl":11,"./ctrl/profile.ctrl":12,"./services/profile.service":14,"angular":18}],14:[function(require,module,exports){
+},{"./ctrl/edit-profile.ctrl":12,"./ctrl/profile.ctrl":13,"./services/profile.service":15,"angular":19}],15:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -467,7 +523,7 @@ ProfileService.$inject = ['$firebaseArray', '$state'];
 exports['default'] = ProfileService;
 module.exports = exports['default'];
 
-},{}],15:[function(require,module,exports){
+},{}],16:[function(require,module,exports){
 'use strict';
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
@@ -506,7 +562,7 @@ _firebase2['default'].initializeApp(fireConfig);
 
 _angular2['default'].module('app', ['app.core', 'app.profile', 'app.bosses', 'ui.router', 'firebase']);
 
-},{"./app-bosses/index":4,"./app-core/index":9,"./app-profile/index":13,"angular":18,"angular-ui-router":16,"angularfire":20,"firebase":21,"jquery":23}],16:[function(require,module,exports){
+},{"./app-bosses/index":5,"./app-core/index":10,"./app-profile/index":14,"angular":19,"angular-ui-router":17,"angularfire":21,"firebase":22,"jquery":24}],17:[function(require,module,exports){
 /**
  * State-based routing for AngularJS
  * @version v0.3.1
@@ -5083,7 +5139,7 @@ angular.module('ui.router.state')
   .filter('isState', $IsStateFilter)
   .filter('includedByState', $IncludedByStateFilter);
 })(window, window.angular);
-},{}],17:[function(require,module,exports){
+},{}],18:[function(require,module,exports){
 /**
  * @license AngularJS v1.5.8
  * (c) 2010-2016 Google, Inc. http://angularjs.org
@@ -36852,11 +36908,11 @@ $provide.value("$locale", {
 })(window);
 
 !window.angular.$$csp().noInlineStyle && window.angular.element(document.head).prepend('<style type="text/css">@charset "UTF-8";[ng\\:cloak],[ng-cloak],[data-ng-cloak],[x-ng-cloak],.ng-cloak,.x-ng-cloak,.ng-hide:not(.ng-hide-animate){display:none !important;}ng\\:form{display:block;}.ng-animate-shim{visibility:hidden;}.ng-anchor{position:absolute;}</style>');
-},{}],18:[function(require,module,exports){
+},{}],19:[function(require,module,exports){
 require('./angular');
 module.exports = angular;
 
-},{"./angular":17}],19:[function(require,module,exports){
+},{"./angular":18}],20:[function(require,module,exports){
 /*!
  * AngularFire is the officially supported AngularJS binding for Firebase. Firebase
  * is a full backend so you don't need servers to build your Angular app. AngularFire
@@ -39124,7 +39180,7 @@ if ( typeof Object.getPrototypeOf !== "function" ) {
     }
 })();
 
-},{}],20:[function(require,module,exports){
+},{}],21:[function(require,module,exports){
 // Make sure dependencies are loaded on the window
 require('angular');
 require('firebase');
@@ -39135,7 +39191,7 @@ require('./dist/angularfire');
 // Export the module name from the Angular module
 module.exports = 'firebase';
 
-},{"./dist/angularfire":19,"angular":18,"firebase":21}],21:[function(require,module,exports){
+},{"./dist/angularfire":20,"angular":19,"firebase":22}],22:[function(require,module,exports){
 /**
  *  Firebase libraries for browser - npm package.
  *
@@ -39146,7 +39202,7 @@ module.exports = 'firebase';
 require('./firebase');
 module.exports = firebase;
 
-},{"./firebase":22}],22:[function(require,module,exports){
+},{"./firebase":23}],23:[function(require,module,exports){
 (function (global){
 /*! @license Firebase v3.3.0
     Build: 3.3.0-rc.7
@@ -39727,7 +39783,7 @@ ta.STATE_CHANGED="state_changed";ua.RUNNING="running";ua.PAUSED="paused";ua.SUCC
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 
-},{}],23:[function(require,module,exports){
+},{}],24:[function(require,module,exports){
 /*!
  * jQuery JavaScript Library v2.2.4
  * http://jquery.com/
@@ -49543,7 +49599,7 @@ if ( !noGlobal ) {
 return jQuery;
 }));
 
-},{}]},{},[15])
+},{}]},{},[16])
 
 
 //# sourceMappingURL=main.js.map

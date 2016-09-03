@@ -1,8 +1,10 @@
-let BossesService = function($firebaseArray, $firebaseObject){
+let BossesService = function($firebaseArray, $firebaseObject, $state){
 
 	this.getBosses = getBosses;
 	this.getBoss = getBoss;
 	this.addBosses = addBosses;
+	this.editBoss = editBoss;
+	this.deleteBoss = deleteBoss;
 
 	let ref = firebase.database().ref('bosses');
 	let array = $firebaseArray(ref);
@@ -28,7 +30,26 @@ let BossesService = function($firebaseArray, $firebaseObject){
 		});
 	}
 
+	function editBoss(boss){
+		let ref = firebase.database().ref('bosses/' + boss.$id);
+
+		let object = $firebaseObject(ref);
+
+		object.name = boss.name;
+		object.url = boss.url;
+		object.$save().then(function(ref) {
+  			ref.key === boss.$id; 
+  			$state.go('root.bosses');
+		}, function(error) {
+ 		 console.log("Error:", error);
+		});	
+	}
+
+	function deleteBoss(boss){
+		console.log(boss);
+	}
+
 };
-BossesService.$inject = ['$firebaseArray', '$firebaseObject'];
+BossesService.$inject = ['$firebaseArray', '$firebaseObject', '$state'];
 
 export default BossesService;

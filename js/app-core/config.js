@@ -48,6 +48,11 @@ let config = function($stateProvider, $urlRouterProvider){
 			controller: 'AddBossCtrl',
 			templateUrl: 'templates/app-bosses/add-boss.html'
 		})
+		.state('root.editBoss', {
+			url: '/editboss/:boss',
+			controller: 'EditBossCtrl',
+			templateUrl: 'templates/app-bosses/edit-boss.html'
+		})
 ;
 }
 

@@ -7,7 +7,14 @@ let BossCtrl = function($scope, $state, $stateParams, BossesService){
 	$scope.bossid = id;
 	$scope.boss = bossArray;
 
-	
+	$scope.editBoss = function(boss){
+		$state.go('root.editBoss', {boss})
+		
+	}
+
+	$scope.deleteBoss = function(boss){
+		
+	};
 };
 BossCtrl.$inject = ['$scope', '$state', '$stateParams', 'BossesService'];
 
