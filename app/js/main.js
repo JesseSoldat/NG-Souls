@@ -123,7 +123,7 @@ var _servicesBossesService2 = _interopRequireDefault(_servicesBossesService);
 
 _angular2['default'].module('app.bosses', []).controller('BossesCtrl', _ctrlBossesCtrl2['default']).controller('BossCtrl', _ctrlBossCtrl2['default']).controller('AddBossCtrl', _ctrlAddBossCtrl2['default']).controller('EditBossCtrl', _ctrlEditBossCtrl2['default']).service('BossesService', _servicesBossesService2['default']);
 
-},{"./ctrl/add-boss.ctrl":1,"./ctrl/boss.ctrl":2,"./ctrl/bosses.ctrl":3,"./ctrl/edit-boss.ctrl":4,"./services/bosses.service":6,"angular":19}],6:[function(require,module,exports){
+},{"./ctrl/add-boss.ctrl":1,"./ctrl/boss.ctrl":2,"./ctrl/bosses.ctrl":3,"./ctrl/edit-boss.ctrl":4,"./services/bosses.service":6,"angular":20}],6:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -201,21 +201,37 @@ var config = function config($stateProvider, $urlRouterProvider) {
 
 	$stateProvider.state('root', {
 		abstract: true,
-		templateUrl: 'templates/app-core/layout.html',
-		controller: 'LoginCtrl'
+		controller: 'LoginCtrl',
+		templateUrl: 'templates/app-core/layout.html'
 
 	}).state('root.dash', {
 		url: '/',
-		templateUrl: 'templates/app-core/dash.html',
-		controller: 'DashCtrl'
+		controller: 'DashCtrl',
+		templateUrl: 'templates/app-core/dash.html'
 	}).state('root.login', {
 		url: '/login',
-		templateUrl: 'templates/app-core/login.html',
-		controller: 'LoginCtrl'
+		controller: 'LoginCtrl',
+		templateUrl: 'templates/app-core/login.html'
 	}).state('root.register', {
 		url: '/register',
 		templateUrl: 'templates/app-core/register.html',
 		controller: 'LoginCtrl'
+	}).state('root.playground', {
+		url: '/playground',
+		controller: 'PlaygroundCtrl',
+		templateUrl: 'templates/app-core/playground.html',
+		resolve: {
+			simpleObj: function simpleObj() {
+				return { value: 'simple!' };
+			},
+			bossesLoaded: function bossesLoaded($firebaseArray) {
+				var ref = firebase.database().ref('bosses');
+				var array = $firebaseArray(ref);
+				return array.$loaded();
+			}
+
+		}
+
 	}).state('root.profile', {
 		url: '/profile',
 		controller: 'ProfileCtrl',
@@ -312,6 +328,50 @@ module.exports = exports['default'];
 },{}],10:[function(require,module,exports){
 'use strict';
 
+Object.defineProperty(exports, '__esModule', {
+	value: true
+});
+var PlaygroundCtrl = function PlaygroundCtrl($scope, $firebaseArray, $firebaseObject, simpleObj, bossesLoaded) {
+
+	var ref = firebase.database().ref();
+	//---------------------------------------------------------
+
+	var playground = ref.child('playground');
+	var bosses = ref.child('bosses');
+
+	//$firebaseObject
+	var obj = $firebaseObject(playground);
+
+	//3 Way Binding
+	obj.$bindTo($scope, 'data').then(function () {
+		//CLEARS ALL FIELDS
+		// ref.set({age: 36, name: 'Jesse Soldat'});
+		//UPDATE A SINGLE FIELD
+		// $scope.data.age = 35;
+	});
+
+	//$firebaseArray
+	//---------------------------------------------------------
+
+	//DO NOT UNWRAP PROMISES
+	// let array = $firebaseArray(bosses);
+
+	// array.$loaded().then(function(){
+	// 	console.log(array);
+	// 	console.log(array.length);
+	// });
+	//---------------------------------------------------------
+	//RESOLVE THE PROMISE IN THE ROUTER
+	console.log(bossesLoaded);
+	console.log(bossesLoaded.length);
+};
+PlaygroundCtrl.$inject = ['$scope', '$firebaseArray', '$firebaseObject', 'simpleObj', 'bossesLoaded'];
+exports['default'] = PlaygroundCtrl;
+module.exports = exports['default'];
+
+},{}],11:[function(require,module,exports){
+'use strict';
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
 var _angular = require('angular');
@@ -332,13 +392,17 @@ var _ctrlDashCtrl = require('./ctrl/dash.ctrl');
 
 var _ctrlDashCtrl2 = _interopRequireDefault(_ctrlDashCtrl);
 
+var _ctrlPlaygroundCtrl = require('./ctrl/playground.ctrl');
+
+var _ctrlPlaygroundCtrl2 = _interopRequireDefault(_ctrlPlaygroundCtrl);
+
 var _servicesLoginService = require('./services/login.service');
 
 var _servicesLoginService2 = _interopRequireDefault(_servicesLoginService);
 
-_angular2['default'].module('app.core', ['ui.router']).config(_config2['default']).controller('LoginCtrl', _ctrlLoginCtrl2['default']).controller('DashCtrl', _ctrlDashCtrl2['default']).service('LoginService', _servicesLoginService2['default']);
+_angular2['default'].module('app.core', ['ui.router']).config(_config2['default']).controller('LoginCtrl', _ctrlLoginCtrl2['default']).controller('DashCtrl', _ctrlDashCtrl2['default']).controller('PlaygroundCtrl', _ctrlPlaygroundCtrl2['default']).service('LoginService', _servicesLoginService2['default']);
 
-},{"./config":7,"./ctrl/dash.ctrl":8,"./ctrl/login.ctrl":9,"./services/login.service":11,"angular":19,"angular-ui-router":17}],11:[function(require,module,exports){
+},{"./config":7,"./ctrl/dash.ctrl":8,"./ctrl/login.ctrl":9,"./ctrl/playground.ctrl":10,"./services/login.service":12,"angular":20,"angular-ui-router":18}],12:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -369,7 +433,7 @@ LoginService.$inject = [];
 exports["default"] = LoginService;
 module.exports = exports["default"];
 
-},{}],12:[function(require,module,exports){
+},{}],13:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -401,7 +465,7 @@ EditProfileCtrl.$inject = ['$scope', '$state', 'ProfileService'];
 exports['default'] = EditProfileCtrl;
 module.exports = exports['default'];
 
-},{}],13:[function(require,module,exports){
+},{}],14:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -428,7 +492,7 @@ ProfileCtrl.$inject = ['$state', '$scope', 'ProfileService'];
 exports['default'] = ProfileCtrl;
 module.exports = exports['default'];
 
-},{}],14:[function(require,module,exports){
+},{}],15:[function(require,module,exports){
 'use strict';
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
@@ -455,7 +519,7 @@ var _servicesProfileService2 = _interopRequireDefault(_servicesProfileService);
 
 _angular2['default'].module('app.profile', []).controller('ProfileCtrl', _ctrlProfileCtrl2['default']).controller('EditProfileCtrl', _ctrlEditProfileCtrl2['default']).service('ProfileService', _servicesProfileService2['default']);
 
-},{"./ctrl/edit-profile.ctrl":12,"./ctrl/profile.ctrl":13,"./services/profile.service":15,"angular":19}],15:[function(require,module,exports){
+},{"./ctrl/edit-profile.ctrl":13,"./ctrl/profile.ctrl":14,"./services/profile.service":16,"angular":20}],16:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -531,7 +595,7 @@ ProfileService.$inject = ['$firebaseArray', '$state'];
 exports['default'] = ProfileService;
 module.exports = exports['default'];
 
-},{}],16:[function(require,module,exports){
+},{}],17:[function(require,module,exports){
 'use strict';
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
@@ -570,7 +634,7 @@ _firebase2['default'].initializeApp(fireConfig);
 
 _angular2['default'].module('app', ['app.core', 'app.profile', 'app.bosses', 'ui.router', 'firebase']);
 
-},{"./app-bosses/index":5,"./app-core/index":10,"./app-profile/index":14,"angular":19,"angular-ui-router":17,"angularfire":21,"firebase":22,"jquery":24}],17:[function(require,module,exports){
+},{"./app-bosses/index":5,"./app-core/index":11,"./app-profile/index":15,"angular":20,"angular-ui-router":18,"angularfire":22,"firebase":23,"jquery":25}],18:[function(require,module,exports){
 /**
  * State-based routing for AngularJS
  * @version v0.3.1
@@ -5147,7 +5211,7 @@ angular.module('ui.router.state')
   .filter('isState', $IsStateFilter)
   .filter('includedByState', $IncludedByStateFilter);
 })(window, window.angular);
-},{}],18:[function(require,module,exports){
+},{}],19:[function(require,module,exports){
 /**
  * @license AngularJS v1.5.8
  * (c) 2010-2016 Google, Inc. http://angularjs.org
@@ -36916,11 +36980,11 @@ $provide.value("$locale", {
 })(window);
 
 !window.angular.$$csp().noInlineStyle && window.angular.element(document.head).prepend('<style type="text/css">@charset "UTF-8";[ng\\:cloak],[ng-cloak],[data-ng-cloak],[x-ng-cloak],.ng-cloak,.x-ng-cloak,.ng-hide:not(.ng-hide-animate){display:none !important;}ng\\:form{display:block;}.ng-animate-shim{visibility:hidden;}.ng-anchor{position:absolute;}</style>');
-},{}],19:[function(require,module,exports){
+},{}],20:[function(require,module,exports){
 require('./angular');
 module.exports = angular;
 
-},{"./angular":18}],20:[function(require,module,exports){
+},{"./angular":19}],21:[function(require,module,exports){
 /*!
  * AngularFire is the officially supported AngularJS binding for Firebase. Firebase
  * is a full backend so you don't need servers to build your Angular app. AngularFire
@@ -39188,7 +39252,7 @@ if ( typeof Object.getPrototypeOf !== "function" ) {
     }
 })();
 
-},{}],21:[function(require,module,exports){
+},{}],22:[function(require,module,exports){
 // Make sure dependencies are loaded on the window
 require('angular');
 require('firebase');
@@ -39199,7 +39263,7 @@ require('./dist/angularfire');
 // Export the module name from the Angular module
 module.exports = 'firebase';
 
-},{"./dist/angularfire":20,"angular":19,"firebase":22}],22:[function(require,module,exports){
+},{"./dist/angularfire":21,"angular":20,"firebase":23}],23:[function(require,module,exports){
 /**
  *  Firebase libraries for browser - npm package.
  *
@@ -39210,7 +39274,7 @@ module.exports = 'firebase';
 require('./firebase');
 module.exports = firebase;
 
-},{"./firebase":23}],23:[function(require,module,exports){
+},{"./firebase":24}],24:[function(require,module,exports){
 (function (global){
 /*! @license Firebase v3.3.0
     Build: 3.3.0-rc.7
@@ -39791,7 +39855,7 @@ ta.STATE_CHANGED="state_changed";ua.RUNNING="running";ua.PAUSED="paused";ua.SUCC
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 
-},{}],24:[function(require,module,exports){
+},{}],25:[function(require,module,exports){
 /*!
  * jQuery JavaScript Library v2.2.4
  * http://jquery.com/
@@ -49607,7 +49671,7 @@ if ( !noGlobal ) {
 return jQuery;
 }));
 
-},{}]},{},[16])
+},{}]},{},[17])
 
 
 //# sourceMappingURL=main.js.map

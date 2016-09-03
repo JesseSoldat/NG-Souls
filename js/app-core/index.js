@@ -6,6 +6,8 @@ import config from './config';
 import LoginCtrl from './ctrl/login.ctrl';
 import DashCtrl from './ctrl/dash.ctrl';
 
+import PlaygroundCtrl from './ctrl/playground.ctrl';
+
 import LoginService from './services/login.service';
 
 
@@ -15,6 +17,7 @@ angular
 
 	.controller('LoginCtrl', LoginCtrl)
 	.controller('DashCtrl', DashCtrl)
+	.controller('PlaygroundCtrl', PlaygroundCtrl)
 
 	.service('LoginService', LoginService)
 

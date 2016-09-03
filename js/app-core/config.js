@@ -4,24 +4,43 @@ let config = function($stateProvider, $urlRouterProvider){
 	$stateProvider
 		.state('root', {
 			abstract: true,
-			templateUrl: 'templates/app-core/layout.html',
-			controller: 'LoginCtrl'
+			controller: 'LoginCtrl',
+			templateUrl: 'templates/app-core/layout.html'
 
 		})
 		.state('root.dash', {
 			url: '/',
-			templateUrl: 'templates/app-core/dash.html',
-			controller: 'DashCtrl'
+			controller: 'DashCtrl',
+			templateUrl: 'templates/app-core/dash.html'
 		})
 		.state('root.login', {
 			url: '/login',
-			templateUrl: 'templates/app-core/login.html',
-			controller: 'LoginCtrl'
+			controller: 'LoginCtrl',
+			templateUrl: 'templates/app-core/login.html'
 		})
 		.state('root.register', {
 			url:'/register',
 			templateUrl: 'templates/app-core/register.html',
 			controller: 'LoginCtrl'
+		})
+		.state('root.playground', {
+			url: '/playground',
+			controller: 'PlaygroundCtrl',
+			templateUrl: 'templates/app-core/playground.html',
+			resolve: {
+				simpleObj:  function(){
+            		return {value: 'simple!'};
+         		},
+         		bossesLoaded: function($firebaseArray){
+     				let ref = firebase.database().ref('bosses');
+					let array = $firebaseArray(ref);
+					return array.$loaded();
+         		}
+
+			}
+			
+			
+
 		})
 		.state('root.profile', {
 			url: '/profile',
