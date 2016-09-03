@@ -36,7 +36,9 @@ var BossCtrl = function BossCtrl($scope, $state, $stateParams, BossesService) {
 		$state.go('root.editBoss', { boss: boss });
 	};
 
-	$scope.deleteBoss = function (boss) {};
+	$scope.deleteBoss = function (boss) {
+		BossesService.deleteBoss(boss);
+	};
 };
 BossCtrl.$inject = ['$scope', '$state', '$stateParams', 'BossesService'];
 
@@ -174,7 +176,13 @@ var BossesService = function BossesService($firebaseArray, $firebaseObject, $sta
 	}
 
 	function deleteBoss(boss) {
-		console.log(boss);
+		var ref = firebase.database().ref('bosses/' + boss);
+		var obj = $firebaseObject(ref);
+		obj.$remove().then(function (ref) {
+			$state.go('root.bosses');
+		}, function (error) {
+			console.log("Error:", error);
+		});
 	}
 };
 BossesService.$inject = ['$firebaseArray', '$firebaseObject', '$state'];

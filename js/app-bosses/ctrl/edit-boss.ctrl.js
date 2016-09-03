@@ -7,10 +7,9 @@ let EditBossCtrl = function($scope, BossesService, $stateParams){
 	$scope.boss = bossData;
 
 	$scope.editBoss = function(boss) {
-		
+
 		BossesService.editBoss(boss);
 	}
-
 
 };
 EditBossCtrl.$inject = ['$scope', 'BossesService', '$stateParams'];

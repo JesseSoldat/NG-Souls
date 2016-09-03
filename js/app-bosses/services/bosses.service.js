@@ -46,7 +46,13 @@ let BossesService = function($firebaseArray, $firebaseObject, $state){
 	}
 
 	function deleteBoss(boss){
-		console.log(boss);
+		let ref = firebase.database().ref('bosses/' + boss);
+		let obj = $firebaseObject(ref);
+		obj.$remove().then(function(ref) {
+  			$state.go('root.bosses');
+		}, function(error) {
+		  console.log("Error:", error);
+		});
 	}
 
 };

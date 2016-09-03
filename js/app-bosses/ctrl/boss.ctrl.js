@@ -13,7 +13,7 @@ let BossCtrl = function($scope, $state, $stateParams, BossesService){
 	}
 
 	$scope.deleteBoss = function(boss){
-		
+		BossesService.deleteBoss(boss);
 	};
 };
 BossCtrl.$inject = ['$scope', '$state', '$stateParams', 'BossesService'];
