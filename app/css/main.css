@@ -8622,12 +8622,18 @@ body {
 .bosses {
   display: inline-block;
   width: 30%;
-  margin: 1.5%; }
+  height: 270px;
+  margin: 1% 1.5%;
+  overflow: hidden; }
   .bosses h4 {
     text-align: center;
     font-size: 1.1em; }
   .bosses img {
-    width: 100%; }
+    display: block;
+    vertical-align: middle;
+    width: 100%;
+    min-height: 210px;
+    max-height: 210px; }
 
 .singleBoss {
   margin: 0 auto;
