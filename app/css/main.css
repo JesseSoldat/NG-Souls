@@ -2193,4 +2193,18 @@
 body {
   background: #e2ebf3; }
 
+#navLinks > li {
+  list-style: none;
+  display: inline-block;
+  margin-right: 3%; }
+
+.bosses {
+  display: inline-block;
+  width: 28%;
+  margin: 2%; }
+  .bosses h4 {
+    text-align: center; }
+  .bosses img {
+    width: 100%; }
+
 /*# sourceMappingURL=main.css.map */

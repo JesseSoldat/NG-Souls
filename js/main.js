@@ -6,6 +6,7 @@ import $ from 'jquery';
 
 import './app-core/index';
 import './app-profile/index';
+import './app-bosses/index';
 
 
 
@@ -18,7 +19,7 @@ var fireConfig = {
   firebase.initializeApp(fireConfig);
 
 angular
-	.module('app', ['app.core', 'app.profile', 'ui.router', 'firebase'])
+	.module('app', ['app.core', 'app.profile', 'app.bosses', 'ui.router', 'firebase'])
 
 
 ;

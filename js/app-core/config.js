@@ -33,6 +33,21 @@ let config = function($stateProvider, $urlRouterProvider){
 			controller: 'EditProfileCtrl',
 			templateUrl: 'templates/app-profile/edit-profile.html'
 		})
+		.state('root.bosses', {
+			url: '/bosses',
+			controller: 'BossesCtrl',
+			templateUrl: 'templates/app-bosses/bosses.html'
+		})
+		.state('root.boss', {
+			url: '/boss/:id',
+			controller: 'BossCtrl',
+			templateUrl: 'templates/app-bosses/boss.html'
+		})
+		.state('root.addBoss', {
+			url: '/addboss',
+			controller: 'AddBossCtrl',
+			templateUrl: 'templates/app-bosses/add-boss.html'
+		})
 ;
 }
 
