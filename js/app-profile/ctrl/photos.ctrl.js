@@ -19,7 +19,7 @@ let PhotosCtrl = function($scope, ProfileService){
 				for(let i = 0; i < photos.length; i++){
 					fileArray.push(photos[i].name);
 				}
-				console.log(fileArray);
+			
 				buildUrlArray();
 
 				function buildUrlArray(){

@@ -551,7 +551,7 @@ var PhotosCtrl = function PhotosCtrl($scope, ProfileService) {
 					for (var i = 0; i < photos.length; i++) {
 						fileArray.push(photos[i].name);
 					}
-					console.log(fileArray);
+
 					buildUrlArray();
 
 					function buildUrlArray() {
@@ -599,7 +599,7 @@ var ProfileCtrl = function ProfileCtrl($state, $scope, ProfileService) {
 				var avatarData = ProfileService.getAvatar(user);
 
 				avatarData.$loaded().then(function () {
-					console.log(avatarData);
+
 					if (avatarData.length > 0) {
 						$scope.avatar = avatarData[0].$value;
 						$scope.haveAvatar = true;
@@ -632,7 +632,7 @@ var fileUpload = function fileUpload(ProfileService) {
 			file: '=image',
 			type: '@'
 		},
-		template: '\n\t\t<div>\n\t\t\t<form>\n\t\t\t\t<progress value="0" max="100" id="uploader">0%</progress>\n\t\t\t\t<input type="file"\n\t\t\t\t\t\tname="img"\n\t\t\t\t\t\taccept="image/*"\n\t\t\t\t\t\tng-model="image.one"\n\t\t\t\t\t\tplaceholder="Choose a File"\n\t\t\t\t/>\n\t\t\t\t<button id="addPhotosBtn">Upload</button>\n\t\t\t</form>\n\t\t</div>\n\t\t',
+		template: '\n\t\t<div>\n\t\t\t<form>\n\t\t\t\t<progress class="fileUploadProgress" value="0" max="100" id="uploader">0%</progress>\n\t\t\t\t<input class="fileUploadInput" type="file"\n\t\t\t\t\t\tname="img"\n\t\t\t\t\t\taccept="image/*"\n\t\t\t\t\t\tng-model="image.one"\n\t\t\t\t\t\tplaceholder="Choose a File"\n\t\t\t\t/>\n\t\t\t\t<button class="small button" id="addPhotosBtn">Upload</button>\n\t\t\t</form>\n\t\t</div>\n\t\t',
 		link: function link(scope, element, attrs, ctrl) {
 			element.on('click', function () {
 				var submit = angular.element(document.querySelector('#addPhotosBtn'));
@@ -764,7 +764,6 @@ var ProfileService = function ProfileService($firebaseArray, $state, $firebaseOb
 	}
 
 	function fileUpload(file, avatar, uploader) {
-		console.log(uploader);
 		var user = firebase.auth().currentUser;
 		var storageRef = firebase.storage().ref();
 		var fileName = file.name;
@@ -831,7 +830,9 @@ var ProfileService = function ProfileService($firebaseArray, $state, $firebaseOb
 			uploadTask.on('state_changed', function progress(snapshot) {
 				var percent = snapshot.bytesTransferred / snapshot.totalBytes * 100;
 				uploader.value = percent;
-			}, function error(err) {}, function complete() {});
+			}, function error(err) {}, function complete() {
+				$state.go('root.dash');
+			});
 		}
 	}
 

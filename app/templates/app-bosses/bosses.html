@@ -1,5 +1,8 @@
 <div class="singleBoss">
-	<h1 >Bosses</h1>
+	<div id="addBosses">
+		<h1>Bosses</h1>
+		<button class="small button" ng-click="addBoss()">Add a Boss</button>	
+	</div>	
 	<hr>
 	<div class="bosses" ng-repeat="boss in bosses">
 		<a href="#/boss/{{boss.$id}}">
@@ -8,8 +11,6 @@
 		</a>
 	</div>
 	<br><br>
-	<div>
-		<button ng-click="addBoss()">Add a Boss</button>	
-	</div>	
+	
 </div>
 

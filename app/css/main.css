@@ -8582,6 +8582,10 @@ th.hide-for-touch {
 body {
   background: #D2D2C9; }
 
+#hr {
+  width: 90%;
+  margin: 0 auto; }
+
 .layoutForm {
   width: 80%;
   margin: 0 auto;
@@ -8598,6 +8602,14 @@ body {
     list-style: none;
     display: inline-block;
     margin-right: 5%; }
+
+.fileUploadProgress {
+  display: inline-block;
+  width: 40%; }
+
+.fileUploadInput {
+  display: inline-block;
+  width: 40%; }
 
 #dashBackground {
   background-image: url("../img/darkSoulsBackground.jpg");
@@ -8618,6 +8630,14 @@ body {
 
 .profileImg {
   width: 40%; }
+
+#addBosses h1 {
+  display: inline-block;
+  vertical-align: middle;
+  margin-right: 3%; }
+
+#addBosses button {
+  display: inline-block; }
 
 .bosses {
   display: inline-block;

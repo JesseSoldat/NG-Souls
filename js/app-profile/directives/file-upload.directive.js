@@ -9,14 +9,14 @@ let fileUpload = function(ProfileService){
 		template: `
 		<div>
 			<form>
-				<progress value="0" max="100" id="uploader">0%</progress>
-				<input type="file"
+				<progress class="fileUploadProgress" value="0" max="100" id="uploader">0%</progress>
+				<input class="fileUploadInput" type="file"
 						name="img"
 						accept="image/*"
 						ng-model="image.one"
 						placeholder="Choose a File"
 				/>
-				<button id="addPhotosBtn">Upload</button>
+				<button class="small button" id="addPhotosBtn">Upload</button>
 			</form>
 		</div>
 		`,

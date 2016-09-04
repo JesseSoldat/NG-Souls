@@ -68,7 +68,6 @@ let ProfileService = function($firebaseArray, $state, $firebaseObject){
 	}
 
 	function fileUpload(file, avatar, uploader) {	
-		console.log(uploader);
 		let user = firebase.auth().currentUser;
 		let storageRef = firebase.storage().ref();
 		let fileName = file.name;
@@ -154,6 +153,7 @@ let ProfileService = function($firebaseArray, $state, $firebaseObject){
 				function error(err){
 				},
 				function complete(){
+					$state.go('root.dash');
 				}
 			);
 		}

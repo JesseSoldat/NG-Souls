@@ -18,7 +18,7 @@ let ProfileCtrl = function($state, $scope, ProfileService){
 
 			
 			avatarData.$loaded().then(function(){
-				console.log(avatarData);
+				
 				if(avatarData.length > 0){
 					$scope.avatar = avatarData[0].$value;
 					$scope.haveAvatar = true;
