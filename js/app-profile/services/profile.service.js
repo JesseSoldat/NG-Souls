@@ -5,9 +5,10 @@ let ProfileService = function($firebaseArray, $state, $firebaseObject){
 	this.editProfile = editProfile;
 	this.fileUpload = fileUpload;
 	this.getAvatar = getAvatar;
+	this.getPhotos = getPhotos;
 
 	function getProfile(user){
-		let ref = firebase.database().ref('users/' + user.uid);
+		let ref = firebase.database().ref('users/' + user.uid+ '/bio');
 		let array = $firebaseArray(ref);
 		
 		return array;
@@ -16,7 +17,7 @@ let ProfileService = function($firebaseArray, $state, $firebaseObject){
 	function addProfile(userData){
 		let user = firebase.auth().currentUser;
 
-		let ref = firebase.database().ref('users/' + user.uid);
+		let ref = firebase.database().ref('users/' +user.uid+ '/bio');
 
 		let array = $firebaseArray(ref);
 
@@ -36,7 +37,7 @@ let ProfileService = function($firebaseArray, $state, $firebaseObject){
 	function editProfile(userData){
 		let user = firebase.auth().currentUser;
 
-		let ref = firebase.database().ref('users/' + user.uid);
+		let ref = firebase.database().ref('users/' + user.uid+ '/bio');
 
 		let array = $firebaseArray(ref);
 		
@@ -68,15 +69,15 @@ let ProfileService = function($firebaseArray, $state, $firebaseObject){
 
 	function fileUpload(file, avatar) {	
 		let user = firebase.auth().currentUser;
+		let storageRef = firebase.storage().ref();
+		let fileName = file.name;
+
 
 		if (avatar === "avatar") {
 
-			let fileName = file.name;
 		
 			let ext = fileName.substring(fileName.lastIndexOf(".")+1).toLowerCase();
-		
 
-			let storageRef = firebase.storage().ref();
 			let avatarRef = storageRef.child(user.uid + '/avatar/' + 'avatar.' +ext);
 			let uploadTask = avatarRef.put(file);
 
@@ -85,15 +86,11 @@ let ProfileService = function($firebaseArray, $state, $firebaseObject){
 
 			let url = avatarRef.getDownloadURL().then(function(url) {
 				console.log(url);
-
-
-			let ref = firebase.database().ref('avatars/' +user.uid);
-			let obj = $firebaseObject(ref);
-			obj.url = url;
-			obj.$save().then(function(ref) {
-			  ref.key === obj.$id; // true
-
-
+				let ref = firebase.database().ref('users/' +user.uid+ '/avatar');
+				let obj = $firebaseObject(ref);
+				obj.url = url;
+				obj.$save().then(function(ref) {
+				  ref.key === obj.$id; // true
 			}, function(error) {
 			  console.log("Error:", error);
 			});
@@ -118,21 +115,40 @@ let ProfileService = function($firebaseArray, $state, $firebaseObject){
 			});
 			
 			//-----------------------------------------
-			// $state.go('root.profile');
+			
 
 
 		}
 
 		if (avatar === 'photos') {
 			console.log('photo');
+			//add a DATABASE RECORD to keep track of users' photos
+			let ref = firebase.database().ref('users/' +user.uid+ '/'+avatar);
+			let array = $firebaseArray(ref);
+
+			array.$add({
+				name: fileName
+			});
+
+			//upload the photo to STORAGE
+			let imgRef = storageRef.child(user.uid + '/photos/' +fileName);
+			let uploadTask = imgRef.put(file);
 		}
 
 	}
 
-	function getAvatar(user){
-		// let user = firebase.auth().currentUser;
+	function getAvatar(user){	
 
-		let ref = firebase.database().ref('avatars/' +user.uid);
+		let ref = firebase.database().ref('users/' +user.uid+ '/avatar');
+		let array = $firebaseArray(ref);
+		
+		return array;
+
+	}
+
+	function getPhotos(){
+		let user = firebase.auth().currentUser;
+		let ref = firebase.database().ref('users/' +user.uid+ '/photos');
 		let array = $firebaseArray(ref);
 		
 		return array;

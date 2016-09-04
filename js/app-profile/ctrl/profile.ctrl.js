@@ -7,49 +7,27 @@ let ProfileCtrl = function($state, $scope, ProfileService){
 	firebase.auth().onAuthStateChanged(function(user){
 		if(user){
 			currentUser = ProfileService.getProfile(user);
-			$scope.data = currentUser;
-			$scope.haveAvatar = true;
 
-		
+			currentUser.$loaded().then(function(){
+				if(currentUser.length > 0){
+					$scope.data = currentUser;
+					$scope.haveBio = true;
+				}
+
+			})
+
 			let avatarData = ProfileService.getAvatar(user);
 
 			
 			avatarData.$loaded().then(function(){
-				$scope.avatar = avatarData[0].$value;
-				console.log($scope.avatar);
-			});
+				console.log(avatarData);
+				if(avatarData.length > 0){
+					$scope.avatar = avatarData[0].$value;
+					$scope.haveAvatar = true;
 
-				
+				}
 
-			
-			//Get Avatar
-			// let storage = firebase.storage();
-
-
-			// let avatarRef = storage.ref(user.uid+'/avatar/avatar.jpg');
-
-			// let url = avatarRef.getDownloadURL().then(function(url) {
-			
-	 	// 		$scope.avatar = url;
-	 	// 		$scope.haveAvatar = true;
-			// }).catch(function(error) {
-			//   switch (error.code) {
-			//     case 'storage/object_not_found':
-			//       // File doesn't exist
-			//       break;
-			//     case 'storage/unauthorized':
-			//       // User doesn't have permission to access the object
-			//       break;
-			//     case 'storage/canceled':
-			//       // User canceled the upload
-			//       break;
-			//     case 'storage/unknown':
-			//       // Unknown error occurred, inspect the server response
-			//       break;
-			//   }
-			// });
-			//-----------------------------------
-			
+			});	
 		} else {
 
 		}

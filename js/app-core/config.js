@@ -2,11 +2,11 @@ let config = function($stateProvider, $urlRouterProvider){
 	$urlRouterProvider.otherwise('/');
 
 	$stateProvider
+		//APP-CORE-------------------------
 		.state('root', {
 			abstract: true,
 			controller: 'LoginCtrl',
 			templateUrl: 'templates/app-core/layout.html'
-
 		})
 		.state('root.dash', {
 			url: '/',
@@ -48,10 +48,8 @@ let config = function($stateProvider, $urlRouterProvider){
          		}
 
 			}
-			
-			
-
 		})
+		//APP-PROFILE----------------------------
 		.state('root.profile', {
 			url: '/profile',
 			controller: 'ProfileCtrl',
@@ -62,6 +60,12 @@ let config = function($stateProvider, $urlRouterProvider){
 			controller: 'EditProfileCtrl',
 			templateUrl: 'templates/app-profile/edit-profile.html'
 		})
+		.state('root.photos', {
+			url: '/photos',
+			controller: 'PhotosCtrl',
+			templateUrl: 'templates/app-profile/photos.html'
+		})
+		//APP-BOSSES-----------------------------
 		.state('root.bosses', {
 			url: '/bosses',
 			controller: 'BossesCtrl',
