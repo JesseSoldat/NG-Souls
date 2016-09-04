@@ -14,11 +14,15 @@
 			<h5>{{d.zip}}</h5>
 			<hr>
 			<h5>{{d.country}}</h5>
-		</div>
-		
-		<img ng-src="../img/darkSoulsAvatar.jpg" class="right profileImg">
+		</div>	
+		<img ng-src="{{avatar}}" class="right profileImg">
+		<img ng-if="!haveAvatar" ng-src="../img/darkSoulsAvatar.jpg" class="right profileImg">
 	</div>
 	<hr>
 	<button ng-click="editProfile()">Edit Profile</button>	
 
 </div>
+
+
+
+

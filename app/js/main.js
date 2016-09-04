@@ -502,10 +502,12 @@ var EditProfileCtrl = function EditProfileCtrl($scope, $state, ProfileService) {
 	$scope.addProfile = function (user) {
 
 		ProfileService.addProfile(user);
+		$state.go('root.profile');
 	};
 
 	$scope.editProfile = function (userData) {
 		ProfileService.editProfile(userData);
+		$state.go('root.profile');
 	};
 };
 EditProfileCtrl.$inject = ['$scope', '$state', 'ProfileService'];
@@ -525,9 +527,45 @@ var ProfileCtrl = function ProfileCtrl($state, $scope, ProfileService) {
 
 	firebase.auth().onAuthStateChanged(function (user) {
 		if (user) {
-			currentUser = ProfileService.getProfile(user);
+			(function () {
+				currentUser = ProfileService.getProfile(user);
+				$scope.data = currentUser;
+				$scope.haveAvatar = true;
 
-			$scope.data = currentUser;
+				var avatarData = ProfileService.getAvatar(user);
+
+				avatarData.$loaded().then(function () {
+					$scope.avatar = avatarData[0].$value;
+					console.log($scope.avatar);
+				});
+
+				//Get Avatar
+				// let storage = firebase.storage();
+
+				// let avatarRef = storage.ref(user.uid+'/avatar/avatar.jpg');
+
+				// let url = avatarRef.getDownloadURL().then(function(url) {
+
+				// 		$scope.avatar = url;
+				// 		$scope.haveAvatar = true;
+				// }).catch(function(error) {
+				//   switch (error.code) {
+				//     case 'storage/object_not_found':
+				//       // File doesn't exist
+				//       break;
+				//     case 'storage/unauthorized':
+				//       // User doesn't have permission to access the object
+				//       break;
+				//     case 'storage/canceled':
+				//       // User canceled the upload
+				//       break;
+				//     case 'storage/unknown':
+				//       // Unknown error occurred, inspect the server response
+				//       break;
+				//   }
+				// });
+				//-----------------------------------
+			})();
 		} else {}
 	});
 
@@ -612,12 +650,13 @@ _angular2['default'].module('app.profile', []).controller('ProfileCtrl', _ctrlPr
 Object.defineProperty(exports, '__esModule', {
 	value: true
 });
-var ProfileService = function ProfileService($firebaseArray, $state) {
+var ProfileService = function ProfileService($firebaseArray, $state, $firebaseObject) {
 
 	this.getProfile = getProfile;
 	this.addProfile = addProfile;
 	this.editProfile = editProfile;
 	this.fileUpload = fileUpload;
+	this.getAvatar = getAvatar;
 
 	function getProfile(user) {
 		var ref = firebase.database().ref('users/' + user.uid);
@@ -679,20 +718,68 @@ var ProfileService = function ProfileService($firebaseArray, $state) {
 	}
 
 	function fileUpload(file, avatar) {
-		console.log(file);
-		console.log(avatar);
-
 		var user = firebase.auth().currentUser;
 
 		if (avatar === "avatar") {
 
+			var fileName = file.name;
+
+			var ext = fileName.substring(fileName.lastIndexOf(".") + 1).toLowerCase();
+
 			var storageRef = firebase.storage().ref();
-			var avatarRef = storageRef.child(user.uid + '/avatar/' + 'avatar.jpg');
+			var avatarRef = storageRef.child(user.uid + '/avatar/' + 'avatar.' + ext);
 			var uploadTask = avatarRef.put(file);
+
+			//-----------------------------------------
+			//Get Avatar to save the URL to the Database
+
+			var url = avatarRef.getDownloadURL().then(function (url) {
+				console.log(url);
+
+				var ref = firebase.database().ref('avatars/' + user.uid);
+				var obj = $firebaseObject(ref);
+				obj.url = url;
+				obj.$save().then(function (ref) {
+					ref.key === obj.$id; // true
+				}, function (error) {
+					console.log("Error:", error);
+				});
+			})['catch'](function (error) {
+				switch (error.code) {
+					case 'storage/object_not_found':
+						// File doesn't exist
+						break;
+					case 'storage/unauthorized':
+						// User doesn't have permission to access the object
+						break;
+					case 'storage/canceled':
+						// User canceled the upload
+						break;
+					case 'storage/unknown':
+						// Unknown error occurred, inspect the server response
+						break;
+				}
+			});
+
+			//-----------------------------------------
+			// $state.go('root.profile');
+		}
+
+		if (avatar === 'photos') {
+			console.log('photo');
 		}
 	}
+
+	function getAvatar(user) {
+		// let user = firebase.auth().currentUser;
+
+		var ref = firebase.database().ref('avatars/' + user.uid);
+		var array = $firebaseArray(ref);
+
+		return array;
+	}
 };
-ProfileService.$inject = ['$firebaseArray', '$state'];
+ProfileService.$inject = ['$firebaseArray', '$state', '$firebaseObject'];
 
 exports['default'] = ProfileService;
 module.exports = exports['default'];
