@@ -1,5 +1,6 @@
 <div ng-show="data.length <= 0" class="layoutForm">
 	<h3>Add Profile</h3>
+	<br>
 	<form ng-submit="addProfile(user)">
 		<input type="text" placeholder="First Name" ng-model="user.fName" required="">
 		<input type="text" placeholder="Last Name" ng-model="user.lName" required="">
@@ -10,11 +11,13 @@
 		<input type="text" placeholder="Country" ng-model="user.country" required="">
 		<button>Submit</button>
 	</form>
+	<hr>
 </div>
 
 
 <div ng-show="data.length > 0" class="layoutForm" ng-repeat="d in data">
 	<h3>Edit Profile</h3>
+	<br>
 	<form ng-submit="editProfile(d)">
 		<input type="text" placeholder="First Name" ng-model="d.fName" required="">
 		<input type="text" placeholder="Last Name" ng-model="d.lName" required="">
@@ -25,4 +28,12 @@
 		<input type="text" placeholder="Country" ng-model="d.country" required="">
 		<button>Submit</button>
 	</form>
+	<hr>
+</div>
+
+
+<div class="layoutForm">
+	<h3>Upload your Avatar</h3>
+	<br><br>
+	<file-upload type="avatar"></file-upload>
 </div>

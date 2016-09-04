@@ -123,7 +123,7 @@ var _servicesBossesService2 = _interopRequireDefault(_servicesBossesService);
 
 _angular2['default'].module('app.bosses', []).controller('BossesCtrl', _ctrlBossesCtrl2['default']).controller('BossCtrl', _ctrlBossCtrl2['default']).controller('AddBossCtrl', _ctrlAddBossCtrl2['default']).controller('EditBossCtrl', _ctrlEditBossCtrl2['default']).service('BossesService', _servicesBossesService2['default']);
 
-},{"./ctrl/add-boss.ctrl":1,"./ctrl/boss.ctrl":2,"./ctrl/bosses.ctrl":3,"./ctrl/edit-boss.ctrl":4,"./services/bosses.service":6,"angular":20}],6:[function(require,module,exports){
+},{"./ctrl/add-boss.ctrl":1,"./ctrl/boss.ctrl":2,"./ctrl/bosses.ctrl":3,"./ctrl/edit-boss.ctrl":4,"./services/bosses.service":6,"angular":21}],6:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -228,6 +228,16 @@ var config = function config($stateProvider, $urlRouterProvider) {
 				var ref = firebase.database().ref('bosses');
 				var array = $firebaseArray(ref);
 				return array.$loaded();
+			},
+			databaseLoaded: function databaseLoaded($firebaseArray) {
+				var ref = firebase.database().ref();
+				var array = $firebaseArray(ref);
+				return array.$loaded();
+			},
+			bossLoaded: function bossLoaded($firebaseObject) {
+				var ref = firebase.database().ref('bosses/-KQZQerEUeqbbbUm4NLG');
+				var obj = $firebaseObject(ref);
+				return obj.$loaded();
 			}
 
 		}
@@ -329,43 +339,81 @@ module.exports = exports['default'];
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
-	value: true
+    value: true
 });
-var PlaygroundCtrl = function PlaygroundCtrl($scope, $firebaseArray, $firebaseObject, simpleObj, bossesLoaded) {
+var PlaygroundCtrl = function PlaygroundCtrl($scope, $firebaseArray, $firebaseObject, simpleObj, bossesLoaded, databaseLoaded, bossLoaded) {
 
-	var ref = firebase.database().ref();
-	//---------------------------------------------------------
+    var ref = firebase.database().ref();
+    //---------------------------------------------------------
 
-	var playground = ref.child('playground');
-	var bosses = ref.child('bosses');
+    var playground = ref.child('playground');
+    var bosses = ref.child('bosses');
+    var languages = ref.child('languages');
 
-	//$firebaseObject
-	var obj = $firebaseObject(playground);
+    //$firebaseObject
+    var obj = $firebaseObject(playground);
+    var langObj = $firebaseObject(languages);
 
-	//3 Way Binding
-	obj.$bindTo($scope, 'data').then(function () {
-		//CLEARS ALL FIELDS
-		// ref.set({age: 36, name: 'Jesse Soldat'});
-		//UPDATE A SINGLE FIELD
-		// $scope.data.age = 35;
-	});
+    //3 Way Binding
+    obj.$bindTo($scope, 'data').then(function () {
+        //CLEARS ALL FIELDS
+        // ref.set({age: 36, name: 'Jesse Soldat'});
+        //UPDATE A SINGLE FIELD
+        // $scope.data.age = 35;
+        $scope.data.gender = 'male';
+    });
 
-	//$firebaseArray
-	//---------------------------------------------------------
+    //CREATES A NEW OBJ DELETES THE OLD ONE
+    langObj.language = "English";
+    langObj.secondLanguage = "Japanese";
+    langObj.thirdLanguage = "Thai";
 
-	//DO NOT UNWRAP PROMISES
-	// let array = $firebaseArray(bosses);
+    langObj.$save().then(function (ref) {
+        ref.key === obj.$id; // true
+    }, function (error) {
+        console.log("Error:", error);
+    });
 
-	// array.$loaded().then(function(){
-	// 	console.log(array);
-	// 	console.log(array.length);
-	// });
-	//---------------------------------------------------------
-	//RESOLVE THE PROMISE IN THE ROUTER
-	console.log(bossesLoaded);
-	console.log(bossesLoaded.length);
+    //$firebaseArray
+    //---------------------------------------------------------
+
+    //DO NOT UNWRAP PROMISES
+    // let array = $firebaseArray(bosses);
+
+    // array.$loaded().then(function(){
+    // 	console.log(array);
+    // 	console.log(array.length);
+    // });
+    //---------------------------------------------------------
+    //RESOLVE THE PROMISE IN THE ROUTER
+    // console.log(bossesLoaded);
+    // console.log(bossesLoaded.length);
+
+    // let upperCaseBosses = [];
+    // bossesLoaded.forEach(function(boss){
+    // 	let b = boss.name.toUpperCase();
+    // 	upperCaseBosses.push(b);
+    // });
+    // console.log(upperCaseBosses);
+    //---------------------------------------------------------
+    //ENTIRE DATABASE
+    // console.log(databaseLoaded);
+
+    //LOOP OVER AN ARRAY
+    angular.forEach(bossesLoaded, function (value, key) {
+        // console.log(key, value.name);
+        // console.log(key, value);
+        // console.log(bossesLoaded);
+
+    });
+    //LOOP OVER AN OBJECT
+    angular.forEach(bossLoaded, function (value, key) {
+        // console.log(key, value);
+
+    });
 };
-PlaygroundCtrl.$inject = ['$scope', '$firebaseArray', '$firebaseObject', 'simpleObj', 'bossesLoaded'];
+
+PlaygroundCtrl.$inject = ['$scope', '$firebaseArray', '$firebaseObject', 'simpleObj', 'bossesLoaded', 'databaseLoaded', 'bossLoaded'];
 exports['default'] = PlaygroundCtrl;
 module.exports = exports['default'];
 
@@ -402,7 +450,7 @@ var _servicesLoginService2 = _interopRequireDefault(_servicesLoginService);
 
 _angular2['default'].module('app.core', ['ui.router']).config(_config2['default']).controller('LoginCtrl', _ctrlLoginCtrl2['default']).controller('DashCtrl', _ctrlDashCtrl2['default']).controller('PlaygroundCtrl', _ctrlPlaygroundCtrl2['default']).service('LoginService', _servicesLoginService2['default']);
 
-},{"./config":7,"./ctrl/dash.ctrl":8,"./ctrl/login.ctrl":9,"./ctrl/playground.ctrl":10,"./services/login.service":12,"angular":20,"angular-ui-router":18}],12:[function(require,module,exports){
+},{"./config":7,"./ctrl/dash.ctrl":8,"./ctrl/login.ctrl":9,"./ctrl/playground.ctrl":10,"./services/login.service":12,"angular":21,"angular-ui-router":19}],12:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -495,6 +543,39 @@ module.exports = exports['default'];
 },{}],15:[function(require,module,exports){
 'use strict';
 
+Object.defineProperty(exports, '__esModule', {
+	value: true
+});
+var fileUpload = function fileUpload(ProfileService) {
+	return {
+		restrict: 'E',
+		replace: true,
+		scope: {
+			file: '=image',
+			type: '@'
+		},
+		template: '\n\t\t<div>\n\t\t\t<form>\n\t\t\t\t<input type="file"\n\t\t\t\t\t\tname="img"\n\t\t\t\t\t\taccept="image/*"\n\t\t\t\t\t\tng-model="image.one"\n\t\t\t\t\t\tplaceholder="Choose a File"\n\t\t\t\t/>\n\t\t\t\t<button id="addPhotosBtn">Upload</button>\n\t\t\t</form>\n\t\t</div>\n\t\t',
+		link: function link(scope, element, attrs, ctrl) {
+			element.on('click', function () {
+				var submit = angular.element(document.querySelector('#addPhotosBtn'));
+			});
+			element.on('submit', function () {
+
+				var file = element.find('input')[0].files[0];
+				ProfileService.fileUpload(file, scope.type);
+			});
+		}
+
+	};
+};
+fileUpload.$inject = ['ProfileService'];
+
+exports['default'] = fileUpload;
+module.exports = exports['default'];
+
+},{}],16:[function(require,module,exports){
+'use strict';
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
 var _angular = require('angular');
@@ -517,9 +598,15 @@ var _servicesProfileService = require('./services/profile.service');
 
 var _servicesProfileService2 = _interopRequireDefault(_servicesProfileService);
 
-_angular2['default'].module('app.profile', []).controller('ProfileCtrl', _ctrlProfileCtrl2['default']).controller('EditProfileCtrl', _ctrlEditProfileCtrl2['default']).service('ProfileService', _servicesProfileService2['default']);
+//Directives
 
-},{"./ctrl/edit-profile.ctrl":13,"./ctrl/profile.ctrl":14,"./services/profile.service":16,"angular":20}],16:[function(require,module,exports){
+var _directivesFileUploadDirective = require('./directives/file-upload.directive');
+
+var _directivesFileUploadDirective2 = _interopRequireDefault(_directivesFileUploadDirective);
+
+_angular2['default'].module('app.profile', []).controller('ProfileCtrl', _ctrlProfileCtrl2['default']).controller('EditProfileCtrl', _ctrlEditProfileCtrl2['default']).service('ProfileService', _servicesProfileService2['default']).directive('fileUpload', _directivesFileUploadDirective2['default']);
+
+},{"./ctrl/edit-profile.ctrl":13,"./ctrl/profile.ctrl":14,"./directives/file-upload.directive":15,"./services/profile.service":17,"angular":21}],17:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -530,6 +617,7 @@ var ProfileService = function ProfileService($firebaseArray, $state) {
 	this.getProfile = getProfile;
 	this.addProfile = addProfile;
 	this.editProfile = editProfile;
+	this.fileUpload = fileUpload;
 
 	function getProfile(user) {
 		var ref = firebase.database().ref('users/' + user.uid);
@@ -589,13 +677,27 @@ var ProfileService = function ProfileService($firebaseArray, $state) {
 			}
 		}
 	}
+
+	function fileUpload(file, avatar) {
+		console.log(file);
+		console.log(avatar);
+
+		var user = firebase.auth().currentUser;
+
+		if (avatar === "avatar") {
+
+			var storageRef = firebase.storage().ref();
+			var avatarRef = storageRef.child(user.uid + '/avatar/' + 'avatar.jpg');
+			var uploadTask = avatarRef.put(file);
+		}
+	}
 };
 ProfileService.$inject = ['$firebaseArray', '$state'];
 
 exports['default'] = ProfileService;
 module.exports = exports['default'];
 
-},{}],17:[function(require,module,exports){
+},{}],18:[function(require,module,exports){
 'use strict';
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
@@ -628,13 +730,13 @@ var fireConfig = {
   apiKey: "AIzaSyAw5uIZdlyPYjBuYoc8zRjbiv0-lxWANys",
   authDomain: "playground-3f11f.firebaseapp.com",
   databaseURL: "https://playground-3f11f.firebaseio.com",
-  storageBucket: ""
+  storageBucket: "playground-3f11f.appspot.com"
 };
 _firebase2['default'].initializeApp(fireConfig);
 
 _angular2['default'].module('app', ['app.core', 'app.profile', 'app.bosses', 'ui.router', 'firebase']);
 
-},{"./app-bosses/index":5,"./app-core/index":11,"./app-profile/index":15,"angular":20,"angular-ui-router":18,"angularfire":22,"firebase":23,"jquery":25}],18:[function(require,module,exports){
+},{"./app-bosses/index":5,"./app-core/index":11,"./app-profile/index":16,"angular":21,"angular-ui-router":19,"angularfire":23,"firebase":24,"jquery":26}],19:[function(require,module,exports){
 /**
  * State-based routing for AngularJS
  * @version v0.3.1
@@ -5211,7 +5313,7 @@ angular.module('ui.router.state')
   .filter('isState', $IsStateFilter)
   .filter('includedByState', $IncludedByStateFilter);
 })(window, window.angular);
-},{}],19:[function(require,module,exports){
+},{}],20:[function(require,module,exports){
 /**
  * @license AngularJS v1.5.8
  * (c) 2010-2016 Google, Inc. http://angularjs.org
@@ -36980,11 +37082,11 @@ $provide.value("$locale", {
 })(window);
 
 !window.angular.$$csp().noInlineStyle && window.angular.element(document.head).prepend('<style type="text/css">@charset "UTF-8";[ng\\:cloak],[ng-cloak],[data-ng-cloak],[x-ng-cloak],.ng-cloak,.x-ng-cloak,.ng-hide:not(.ng-hide-animate){display:none !important;}ng\\:form{display:block;}.ng-animate-shim{visibility:hidden;}.ng-anchor{position:absolute;}</style>');
-},{}],20:[function(require,module,exports){
+},{}],21:[function(require,module,exports){
 require('./angular');
 module.exports = angular;
 
-},{"./angular":19}],21:[function(require,module,exports){
+},{"./angular":20}],22:[function(require,module,exports){
 /*!
  * AngularFire is the officially supported AngularJS binding for Firebase. Firebase
  * is a full backend so you don't need servers to build your Angular app. AngularFire
@@ -39252,7 +39354,7 @@ if ( typeof Object.getPrototypeOf !== "function" ) {
     }
 })();
 
-},{}],22:[function(require,module,exports){
+},{}],23:[function(require,module,exports){
 // Make sure dependencies are loaded on the window
 require('angular');
 require('firebase');
@@ -39263,7 +39365,7 @@ require('./dist/angularfire');
 // Export the module name from the Angular module
 module.exports = 'firebase';
 
-},{"./dist/angularfire":21,"angular":20,"firebase":23}],23:[function(require,module,exports){
+},{"./dist/angularfire":22,"angular":21,"firebase":24}],24:[function(require,module,exports){
 /**
  *  Firebase libraries for browser - npm package.
  *
@@ -39274,7 +39376,7 @@ module.exports = 'firebase';
 require('./firebase');
 module.exports = firebase;
 
-},{"./firebase":24}],24:[function(require,module,exports){
+},{"./firebase":25}],25:[function(require,module,exports){
 (function (global){
 /*! @license Firebase v3.3.0
     Build: 3.3.0-rc.7
@@ -39855,7 +39957,7 @@ ta.STATE_CHANGED="state_changed";ua.RUNNING="running";ua.PAUSED="paused";ua.SUCC
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 
-},{}],25:[function(require,module,exports){
+},{}],26:[function(require,module,exports){
 /*!
  * jQuery JavaScript Library v2.2.4
  * http://jquery.com/
@@ -49671,7 +49773,7 @@ if ( !noGlobal ) {
 return jQuery;
 }));
 
-},{}]},{},[17])
+},{}]},{},[18])
 
 
 //# sourceMappingURL=main.js.map

@@ -35,6 +35,16 @@ let config = function($stateProvider, $urlRouterProvider){
      				let ref = firebase.database().ref('bosses');
 					let array = $firebaseArray(ref);
 					return array.$loaded();
+         		},
+         		databaseLoaded: function($firebaseArray){
+         			let ref = firebase.database().ref();
+         			let array = $firebaseArray(ref);
+         			return array.$loaded();
+         		},
+         		bossLoaded: function($firebaseObject){
+         			let ref = firebase.database().ref('bosses/-KQZQerEUeqbbbUm4NLG');
+         			let obj = $firebaseObject(ref);
+         			return obj.$loaded();
          		}
 
 			}

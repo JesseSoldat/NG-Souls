@@ -3,6 +3,7 @@ let ProfileService = function($firebaseArray, $state){
 	this.getProfile = getProfile;
 	this.addProfile = addProfile;
 	this.editProfile = editProfile;
+	this.fileUpload = fileUpload;
 
 	function getProfile(user){
 		let ref = firebase.database().ref('users/' + user.uid);
@@ -62,6 +63,22 @@ let ProfileService = function($firebaseArray, $state){
 				}, 100);
 			}
 		}
+	}
+
+	function fileUpload(file, avatar) {
+		console.log(file);
+		console.log(avatar);
+		
+		let user = firebase.auth().currentUser;
+
+		if (avatar === "avatar") {
+			
+			let storageRef = firebase.storage().ref();
+			let avatarRef = storageRef.child(user.uid + '/avatar/' + 'avatar.jpg');
+			let uploadTask = avatarRef.put(file);
+
+		}
+
 	}
 
 };
