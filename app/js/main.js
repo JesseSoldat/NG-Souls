@@ -546,7 +546,6 @@ var PhotosCtrl = function PhotosCtrl($scope, ProfileService) {
 				// Create an Array of files URLs to download from the Database img section
 
 				photos.$loaded().then(function () {
-					console.log(photos);
 
 					//Push file names to the files array
 					for (var i = 0; i < photos.length; i++) {
@@ -633,15 +632,16 @@ var fileUpload = function fileUpload(ProfileService) {
 			file: '=image',
 			type: '@'
 		},
-		template: '\n\t\t<div>\n\t\t\t<form>\n\t\t\t\t<input type="file"\n\t\t\t\t\t\tname="img"\n\t\t\t\t\t\taccept="image/*"\n\t\t\t\t\t\tng-model="image.one"\n\t\t\t\t\t\tplaceholder="Choose a File"\n\t\t\t\t/>\n\t\t\t\t<button id="addPhotosBtn">Upload</button>\n\t\t\t</form>\n\t\t</div>\n\t\t',
+		template: '\n\t\t<div>\n\t\t\t<form>\n\t\t\t\t<progress value="0" max="100" id="uploader">0%</progress>\n\t\t\t\t<input type="file"\n\t\t\t\t\t\tname="img"\n\t\t\t\t\t\taccept="image/*"\n\t\t\t\t\t\tng-model="image.one"\n\t\t\t\t\t\tplaceholder="Choose a File"\n\t\t\t\t/>\n\t\t\t\t<button id="addPhotosBtn">Upload</button>\n\t\t\t</form>\n\t\t</div>\n\t\t',
 		link: function link(scope, element, attrs, ctrl) {
 			element.on('click', function () {
 				var submit = angular.element(document.querySelector('#addPhotosBtn'));
+				var uploader = document.getElementById('uploader');
 			});
 			element.on('submit', function () {
 
 				var file = element.find('input')[0].files[0];
-				ProfileService.fileUpload(file, scope.type);
+				ProfileService.fileUpload(file, scope.type, uploader);
 			});
 		}
 
@@ -763,7 +763,8 @@ var ProfileService = function ProfileService($firebaseArray, $state, $firebaseOb
 		}
 	}
 
-	function fileUpload(file, avatar) {
+	function fileUpload(file, avatar, uploader) {
+		console.log(uploader);
 		var user = firebase.auth().currentUser;
 		var storageRef = firebase.storage().ref();
 		var fileName = file.name;
@@ -774,6 +775,11 @@ var ProfileService = function ProfileService($firebaseArray, $state, $firebaseOb
 
 			var avatarRef = storageRef.child(user.uid + '/avatar/' + 'avatar.' + ext);
 			var uploadTask = avatarRef.put(file);
+
+			uploadTask.on('state_changed', function progress(snapshot) {
+				var percent = snapshot.bytesTransferred / snapshot.totalBytes * 100;
+				uploader.value = percent;
+			}, function error(err) {}, function complete() {});
 
 			//-----------------------------------------
 			//Get Avatar to save the URL to the Database
@@ -809,7 +815,7 @@ var ProfileService = function ProfileService($firebaseArray, $state, $firebaseOb
 		}
 
 		if (avatar === 'photos') {
-			console.log('photo');
+
 			//add a DATABASE RECORD to keep track of users' photos
 			var ref = firebase.database().ref('users/' + user.uid + '/' + avatar);
 			var array = $firebaseArray(ref);
@@ -821,6 +827,11 @@ var ProfileService = function ProfileService($firebaseArray, $state, $firebaseOb
 			//upload the photo to STORAGE
 			var imgRef = storageRef.child(user.uid + '/photos/' + fileName);
 			var uploadTask = imgRef.put(file);
+
+			uploadTask.on('state_changed', function progress(snapshot) {
+				var percent = snapshot.bytesTransferred / snapshot.totalBytes * 100;
+				uploader.value = percent;
+			}, function error(err) {}, function complete() {});
 		}
 	}
 

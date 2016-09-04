@@ -67,7 +67,8 @@ let ProfileService = function($firebaseArray, $state, $firebaseObject){
 		}
 	}
 
-	function fileUpload(file, avatar) {	
+	function fileUpload(file, avatar, uploader) {	
+		console.log(uploader);
 		let user = firebase.auth().currentUser;
 		let storageRef = firebase.storage().ref();
 		let fileName = file.name;
@@ -80,6 +81,17 @@ let ProfileService = function($firebaseArray, $state, $firebaseObject){
 
 			let avatarRef = storageRef.child(user.uid + '/avatar/' + 'avatar.' +ext);
 			let uploadTask = avatarRef.put(file);
+
+			uploadTask.on('state_changed',
+				function progress(snapshot){
+					let percent = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+					uploader.value = percent;
+				},
+				function error(err){
+				},
+				function complete(){
+				}
+			);
 
 			//-----------------------------------------
 			//Get Avatar to save the URL to the Database
@@ -121,7 +133,7 @@ let ProfileService = function($firebaseArray, $state, $firebaseObject){
 		}
 
 		if (avatar === 'photos') {
-			console.log('photo');
+		
 			//add a DATABASE RECORD to keep track of users' photos
 			let ref = firebase.database().ref('users/' +user.uid+ '/'+avatar);
 			let array = $firebaseArray(ref);
@@ -133,6 +145,17 @@ let ProfileService = function($firebaseArray, $state, $firebaseObject){
 			//upload the photo to STORAGE
 			let imgRef = storageRef.child(user.uid + '/photos/' +fileName);
 			let uploadTask = imgRef.put(file);
+
+			uploadTask.on('state_changed',
+				function progress(snapshot){
+					let percent = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+					uploader.value = percent;
+				},
+				function error(err){
+				},
+				function complete(){
+				}
+			);
 		}
 
 	}

@@ -14,8 +14,7 @@ let PhotosCtrl = function($scope, ProfileService){
 			// Create an Array of files URLs to download from the Database img section
 			
 			photos.$loaded().then(function(){
-				console.log(photos);
-
+			
 				//Push file names to the files array
 				for(let i = 0; i < photos.length; i++){
 					fileArray.push(photos[i].name);

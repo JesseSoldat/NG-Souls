@@ -9,6 +9,7 @@ let fileUpload = function(ProfileService){
 		template: `
 		<div>
 			<form>
+				<progress value="0" max="100" id="uploader">0%</progress>
 				<input type="file"
 						name="img"
 						accept="image/*"
@@ -22,12 +23,14 @@ let fileUpload = function(ProfileService){
 		link: function(scope, element, attrs, ctrl){
 			element.on('click', function(){
 				let submit = angular.element(document.querySelector('#addPhotosBtn'));
+				let uploader = document.getElementById('uploader');
+
 
 			});
 			element.on('submit', function(){
 				
 				let file = element.find('input')[0].files[0];
-				ProfileService.fileUpload(file, scope.type)
+				ProfileService.fileUpload(file, scope.type, uploader)
 			});
 		}
 
