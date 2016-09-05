@@ -41,7 +41,7 @@ let PhotosCtrl = function($scope, ProfileService, $state){
 		} else {
 
 		}
-	})
+	}) 
 
 	$scope.singlePhoto = function(url){
 		// console.log(url);
