@@ -1,5 +1,6 @@
 let BossCtrl = function($scope, $state, $stateParams, BossesService){
 
+
 	let id = $stateParams.id;
 
 	let bossArray = BossesService.getBoss(id);

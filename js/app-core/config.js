@@ -5,7 +5,7 @@ let config = function($stateProvider, $urlRouterProvider){
 		//APP-CORE-------------------------
 		.state('root', {
 			abstract: true,
-			controller: 'LoginCtrl',
+			controller: 'LayoutCtrl',
 			templateUrl: 'templates/app-core/layout.html'
 		})
 		.state('root.dash', {
@@ -13,12 +13,12 @@ let config = function($stateProvider, $urlRouterProvider){
 			controller: 'DashCtrl',
 			templateUrl: 'templates/app-core/dash.html'
 		})
-		.state('root.login', {
+		.state('login', {
 			url: '/login',
 			controller: 'LoginCtrl',
 			templateUrl: 'templates/app-core/login.html'
 		})
-		.state('root.register', {
+		.state('register', {
 			url:'/register',
 			templateUrl: 'templates/app-core/register.html',
 			controller: 'LoginCtrl'

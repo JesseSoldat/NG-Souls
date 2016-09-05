@@ -1,5 +1,6 @@
 let BossesCtrl = function($scope, $state, BossesService){
 
+
 	getBosses();
 
 	function getBosses(){
