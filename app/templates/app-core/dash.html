@@ -1,2 +1,6 @@
-<div id="dashBackground"></div>
-
+<div ng-show="!haveBackground" id="dashBackground">
+		<button id="dashBtn" class="small button" ng-click="changeDash();">Change</button>
+</div>
+<div ng-show="haveBackground" id="dashBackground2">
+		<button id="dashBtn" class="small button" ng-click="changeDash();">Change</button>
+</div>

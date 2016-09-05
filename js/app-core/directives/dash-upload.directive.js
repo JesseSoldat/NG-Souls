@@ -1,4 +1,4 @@
-let fileUpload = function(ProfileService){
+let dashUpload = function(DashService){
 	return {
 		restrict: 'E',
 		replace: true,
@@ -7,10 +7,10 @@ let fileUpload = function(ProfileService){
 			type: '@'
 		},
 		template: `
-		<div>
+		<div class="layoutForm">
 			<form>
 				<div id="fileUploadControls">
-					<progress class="fileUploadProgress" value="0" max="100" id="uploader">0%</progress>
+					<progress class="fileUploadProgress" value="0" max="100" id="dashUploader">0%</progress>
 					<input class="fileUploadInput" type="file"
 							name="img"
 							accept="image/*"
@@ -23,22 +23,22 @@ let fileUpload = function(ProfileService){
 		</div>
 		`,
 		link: function(scope, element, attrs, ctrl){
+
+			let uploader;
 			element.on('click', function(){
 				let submit = angular.element(document.querySelector('#addPhotosBtn'));
-				let uploader = document.getElementById('uploader');
-
-
+				uploader = document.getElementById('dashUploader');
 			});
 			element.on('submit', function(){
 				
 				let file = element.find('input')[0].files[0];
-				ProfileService.fileUpload(file, scope.type, uploader)
+				DashService.fileUpload(file, uploader);
 			});
 		}
 
 
 	}
 };
-fileUpload.$inject = ['ProfileService'];
+dashUpload.$inject = ['DashService'];
 
-export default fileUpload;
+export default dashUpload;

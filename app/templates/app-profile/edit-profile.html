@@ -1,4 +1,4 @@
-<div ng-show="data.length <= 0" class="layoutForm">
+<div ng-show="data.length <= 0" class="layoutProfile">
 	<h3>Add Profile</h3>
 	<br>
 	<form ng-submit="addProfile(user)">
@@ -15,7 +15,7 @@
 </div>
 
 
-<div ng-show="data.length > 0" class="layoutForm" ng-repeat="d in data">
+<div ng-show="data.length > 0" class="layoutProfile" ng-repeat="d in data">
 	<h3>Edit Profile</h3>
 	<br>
 	<form ng-submit="editProfile(d)">
@@ -32,7 +32,7 @@
 </div>
 
 
-<div class="layoutForm">
+<div class="layoutProfile">
 	<h3>Upload your Avatar</h3>
 	<file-upload type="avatar"></file-upload>
 </div>

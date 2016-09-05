@@ -123,7 +123,7 @@ var _servicesBossesService2 = _interopRequireDefault(_servicesBossesService);
 
 _angular2['default'].module('app.bosses', []).controller('BossesCtrl', _ctrlBossesCtrl2['default']).controller('BossCtrl', _ctrlBossCtrl2['default']).controller('AddBossCtrl', _ctrlAddBossCtrl2['default']).controller('EditBossCtrl', _ctrlEditBossCtrl2['default']).service('BossesService', _servicesBossesService2['default']);
 
-},{"./ctrl/add-boss.ctrl":1,"./ctrl/boss.ctrl":2,"./ctrl/bosses.ctrl":3,"./ctrl/edit-boss.ctrl":4,"./services/bosses.service":6,"angular":24}],6:[function(require,module,exports){
+},{"./ctrl/add-boss.ctrl":1,"./ctrl/boss.ctrl":2,"./ctrl/bosses.ctrl":3,"./ctrl/edit-boss.ctrl":4,"./services/bosses.service":6,"angular":27}],6:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -209,6 +209,11 @@ var config = function config($stateProvider, $urlRouterProvider) {
 		url: '/',
 		controller: 'DashCtrl',
 		templateUrl: 'templates/app-core/dash.html'
+
+	}).state('root.editDash', {
+		url: '/editdash',
+		controller: 'EditDashCtrl',
+		templateUrl: 'templates/app-core/edit-dash.html'
 	}).state('login', {
 		url: '/login',
 		controller: 'LoginCtrl',
@@ -291,15 +296,62 @@ module.exports = exports['default'];
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
-  value: true
+	value: true
 });
-var DashCtrl = function DashCtrl($firebaseArray, $scope, $state) {};
-DashCtrl.$inject = ['$firebaseArray', '$scope', '$state'];
+var DashCtrl = function DashCtrl($firebaseArray, $scope, $state, DashService) {
+
+	firebase.auth().onAuthStateChanged(function (user) {
+		if (user) {
+			(function () {
+				var getBackground = DashService.getBackground(user);
+
+				getBackground.$loaded().then(function () {
+					if (getBackground.length > 0) {
+						$scope.haveBackground = true;
+						var url = getBackground[0].$value;
+						console.log(url);
+						var img = document.querySelector('#dashBackground2');
+						console.log(img);
+						img.style.backgroundImage = 'url(' + url + ')';
+					} else {
+						$scope.haveBackground = false;
+					}
+				});
+			})();
+		} else {}
+	});
+
+	// let dashDiv = document.querySelector('#dashBackground');
+	// let dashBtn = document.querySelector('#dashBtn');
+
+	// dashDiv.addEventListener("mouseover", function(){
+	// 	dashBtn.style.opacity = 1;
+	// });
+	// dashDiv.addEventListener("mouseleave", function(){
+	// 	dashBtn.style.opacity = 0;	
+	// });
+
+	$scope.changeDash = function () {
+		$state.go('root.editDash');
+	};
+};
+DashCtrl.$inject = ['$firebaseArray', '$scope', '$state', 'DashService'];
 
 exports['default'] = DashCtrl;
 module.exports = exports['default'];
 
 },{}],9:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, '__esModule', {
+  value: true
+});
+var EditDashCtrl = function EditDashCtrl($state) {};
+EditDashCtrl.$inject = ['$state'];
+exports['default'] = EditDashCtrl;
+module.exports = exports['default'];
+
+},{}],10:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -317,7 +369,7 @@ LayoutCtrl.$inject = ['$state'];
 exports['default'] = LayoutCtrl;
 module.exports = exports['default'];
 
-},{}],10:[function(require,module,exports){
+},{}],11:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -358,7 +410,7 @@ LoginCtrl.$inject = ['$scope', '$state', 'LoginService'];
 exports['default'] = LoginCtrl;
 module.exports = exports['default'];
 
-},{}],11:[function(require,module,exports){
+},{}],12:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -440,7 +492,43 @@ PlaygroundCtrl.$inject = ['$scope', '$firebaseArray', '$firebaseObject', 'simple
 exports['default'] = PlaygroundCtrl;
 module.exports = exports['default'];
 
-},{}],12:[function(require,module,exports){
+},{}],13:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, '__esModule', {
+	value: true
+});
+var dashUpload = function dashUpload(DashService) {
+	return {
+		restrict: 'E',
+		replace: true,
+		scope: {
+			file: '=image',
+			type: '@'
+		},
+		template: '\n\t\t<div class="layoutForm">\n\t\t\t<form>\n\t\t\t\t<div id="fileUploadControls">\n\t\t\t\t\t<progress class="fileUploadProgress" value="0" max="100" id="dashUploader">0%</progress>\n\t\t\t\t\t<input class="fileUploadInput" type="file"\n\t\t\t\t\t\t\tname="img"\n\t\t\t\t\t\t\taccept="image/*"\n\t\t\t\t\t\t\tng-model="image.one"\n\t\t\t\t\t\t\tplaceholder="Choose a File"\n\t\t\t\t\t/>\n\t\t\t\t</div>\n\t\t\t\t<button class="small button" id="addPhotosBtn">Upload</button>\n\t\t\t</form>\n\t\t</div>\n\t\t',
+		link: function link(scope, element, attrs, ctrl) {
+
+			var uploader = undefined;
+			element.on('click', function () {
+				var submit = angular.element(document.querySelector('#addPhotosBtn'));
+				uploader = document.getElementById('dashUploader');
+			});
+			element.on('submit', function () {
+
+				var file = element.find('input')[0].files[0];
+				DashService.fileUpload(file, uploader);
+			});
+		}
+
+	};
+};
+dashUpload.$inject = ['DashService'];
+
+exports['default'] = dashUpload;
+module.exports = exports['default'];
+
+},{}],14:[function(require,module,exports){
 'use strict';
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
@@ -455,6 +543,8 @@ var _config = require('./config');
 
 var _config2 = _interopRequireDefault(_config);
 
+//CTRL
+
 var _ctrlLayoutCtrl = require('./ctrl/layout.ctrl');
 
 var _ctrlLayoutCtrl2 = _interopRequireDefault(_ctrlLayoutCtrl);
@@ -467,17 +557,96 @@ var _ctrlDashCtrl = require('./ctrl/dash.ctrl');
 
 var _ctrlDashCtrl2 = _interopRequireDefault(_ctrlDashCtrl);
 
+var _ctrlEditDashCtrl = require('./ctrl/edit-dash.ctrl');
+
+var _ctrlEditDashCtrl2 = _interopRequireDefault(_ctrlEditDashCtrl);
+
 var _ctrlPlaygroundCtrl = require('./ctrl/playground.ctrl');
 
 var _ctrlPlaygroundCtrl2 = _interopRequireDefault(_ctrlPlaygroundCtrl);
+
+//SERVICES
 
 var _servicesLoginService = require('./services/login.service');
 
 var _servicesLoginService2 = _interopRequireDefault(_servicesLoginService);
 
-_angular2['default'].module('app.core', ['ui.router']).config(_config2['default']).controller('LayoutCtrl', _ctrlLayoutCtrl2['default']).controller('LoginCtrl', _ctrlLoginCtrl2['default']).controller('DashCtrl', _ctrlDashCtrl2['default']).controller('PlaygroundCtrl', _ctrlPlaygroundCtrl2['default']).service('LoginService', _servicesLoginService2['default']);
+var _servicesDashService = require('./services/dash.service');
 
-},{"./config":7,"./ctrl/dash.ctrl":8,"./ctrl/layout.ctrl":9,"./ctrl/login.ctrl":10,"./ctrl/playground.ctrl":11,"./services/login.service":13,"angular":24,"angular-ui-router":22}],13:[function(require,module,exports){
+var _servicesDashService2 = _interopRequireDefault(_servicesDashService);
+
+//DIRECTIVES
+
+var _directivesDashUploadDirective = require('./directives/dash-upload.directive');
+
+var _directivesDashUploadDirective2 = _interopRequireDefault(_directivesDashUploadDirective);
+
+_angular2['default'].module('app.core', ['ui.router']).config(_config2['default']).controller('LayoutCtrl', _ctrlLayoutCtrl2['default']).controller('LoginCtrl', _ctrlLoginCtrl2['default']).controller('DashCtrl', _ctrlDashCtrl2['default']).controller('EditDashCtrl', _ctrlEditDashCtrl2['default']).controller('PlaygroundCtrl', _ctrlPlaygroundCtrl2['default']).service('LoginService', _servicesLoginService2['default']).service('DashService', _servicesDashService2['default']).directive('dashUpload', _directivesDashUploadDirective2['default']);
+
+},{"./config":7,"./ctrl/dash.ctrl":8,"./ctrl/edit-dash.ctrl":9,"./ctrl/layout.ctrl":10,"./ctrl/login.ctrl":11,"./ctrl/playground.ctrl":12,"./directives/dash-upload.directive":13,"./services/dash.service":15,"./services/login.service":16,"angular":27,"angular-ui-router":25}],15:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, '__esModule', {
+	value: true
+});
+var DashService = function DashService($firebaseArray, $state, $firebaseObject) {
+
+	this.fileUpload = fileUpload;
+	this.getBackground = getBackground;
+
+	function getBackground(user) {
+
+		var ref = firebase.database().ref('users/' + user.uid + '/dashImg');
+		var array = $firebaseArray(ref);
+		return array;
+	}
+
+	function fileUpload(file, uploader) {
+		console.log(uploader);
+		var user = firebase.auth().currentUser;
+		var storageRef = firebase.storage().ref();
+		var fileName = file.name;
+		var ext = fileName.substring(fileName.lastIndexOf('.') + 1).toLowerCase();
+		var dashRef = storageRef.child(user.uid + '/dash/dashImg/' + 'dashImg.' + ext);
+		var uploadTask = dashRef.put(file);
+
+		uploadTask.on('state_changed', function (snapshot) {
+			var percent = snapshot.bytesTransferred / snapshot.totalBytes * 100;
+			uploader.value = percent;
+		}, function error(err) {}, function complete() {});
+		//Save URL to DATABASE
+		var url = dashRef.getDownloadURL().then(function (url) {
+			var ref = firebase.database().ref('users/' + user.uid + '/dashImg');
+			var obj = $firebaseObject(ref);
+			obj.url = url;
+			obj.$save().then(function (ref) {
+				ref.key === obj.$id;
+			}, function (error) {
+				console.log('Error: ', error);
+			});
+		})['catch'](function (error) {
+			switch (error.code) {
+				case 'storage/object_not_found':
+					// File doesn't exist
+					break;
+				case 'storage/unauthorized':
+					// User doesn't have permission to access the object
+					break;
+				case 'storage/canceled':
+					// User canceled the upload
+					break;
+				case 'storage/unknown':
+					// Unknown error occurred, inspect the server response
+					break;
+			}
+		});
+	}
+};
+DashService.$inject = ['$firebaseArray', '$state', '$firebaseObject'];
+exports['default'] = DashService;
+module.exports = exports['default'];
+
+},{}],16:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -508,7 +677,7 @@ LoginService.$inject = [];
 exports["default"] = LoginService;
 module.exports = exports["default"];
 
-},{}],14:[function(require,module,exports){
+},{}],17:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -542,7 +711,7 @@ EditProfileCtrl.$inject = ['$scope', '$state', 'ProfileService'];
 exports['default'] = EditProfileCtrl;
 module.exports = exports['default'];
 
-},{}],15:[function(require,module,exports){
+},{}],18:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -563,7 +732,7 @@ PhotoCtrl.$inject = ['$scope', 'ProfileService', '$stateParams', '$state'];
 exports['default'] = PhotoCtrl;
 module.exports = exports['default'];
 
-},{}],16:[function(require,module,exports){
+},{}],19:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -619,7 +788,7 @@ PhotosCtrl.$inject = ['$scope', 'ProfileService', '$state'];
 exports['default'] = PhotosCtrl;
 module.exports = exports['default'];
 
-},{}],17:[function(require,module,exports){
+},{}],20:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -663,7 +832,7 @@ ProfileCtrl.$inject = ['$state', '$scope', 'ProfileService'];
 exports['default'] = ProfileCtrl;
 module.exports = exports['default'];
 
-},{}],18:[function(require,module,exports){
+},{}],21:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -677,7 +846,7 @@ var fileUpload = function fileUpload(ProfileService) {
 			file: '=image',
 			type: '@'
 		},
-		template: '\n\t\t<div>\n\t\t\t<form>\n\t\t\t\t<progress class="fileUploadProgress" value="0" max="100" id="uploader">0%</progress>\n\t\t\t\t<input class="fileUploadInput" type="file"\n\t\t\t\t\t\tname="img"\n\t\t\t\t\t\taccept="image/*"\n\t\t\t\t\t\tng-model="image.one"\n\t\t\t\t\t\tplaceholder="Choose a File"\n\t\t\t\t/>\n\t\t\t\t<button class="small button" id="addPhotosBtn">Upload</button>\n\t\t\t</form>\n\t\t</div>\n\t\t',
+		template: '\n\t\t<div>\n\t\t\t<form>\n\t\t\t\t<div id="fileUploadControls">\n\t\t\t\t\t<progress class="fileUploadProgress" value="0" max="100" id="uploader">0%</progress>\n\t\t\t\t\t<input class="fileUploadInput" type="file"\n\t\t\t\t\t\t\tname="img"\n\t\t\t\t\t\t\taccept="image/*"\n\t\t\t\t\t\t\tng-model="image.one"\n\t\t\t\t\t\t\tplaceholder="Choose a File"\n\t\t\t\t\t/>\n\t\t\t\t</div>\n\t\t\t\t<button class="small button" id="addPhotosBtn">Upload</button>\n\t\t\t</form>\n\t\t</div>\n\t\t',
 		link: function link(scope, element, attrs, ctrl) {
 			element.on('click', function () {
 				var submit = angular.element(document.querySelector('#addPhotosBtn'));
@@ -697,7 +866,7 @@ fileUpload.$inject = ['ProfileService'];
 exports['default'] = fileUpload;
 module.exports = exports['default'];
 
-},{}],19:[function(require,module,exports){
+},{}],22:[function(require,module,exports){
 'use strict';
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
@@ -738,7 +907,7 @@ var _directivesFileUploadDirective2 = _interopRequireDefault(_directivesFileUplo
 
 _angular2['default'].module('app.profile', []).controller('ProfileCtrl', _ctrlProfileCtrl2['default']).controller('EditProfileCtrl', _ctrlEditProfileCtrl2['default']).controller('PhotosCtrl', _ctrlPhotosCtrl2['default']).controller('PhotoCtrl', _ctrlPhotoCtrl2['default']).service('ProfileService', _servicesProfileService2['default']).directive('fileUpload', _directivesFileUploadDirective2['default']);
 
-},{"./ctrl/edit-profile.ctrl":14,"./ctrl/photo.ctrl":15,"./ctrl/photos.ctrl":16,"./ctrl/profile.ctrl":17,"./directives/file-upload.directive":18,"./services/profile.service":20,"angular":24}],20:[function(require,module,exports){
+},{"./ctrl/edit-profile.ctrl":17,"./ctrl/photo.ctrl":18,"./ctrl/photos.ctrl":19,"./ctrl/profile.ctrl":20,"./directives/file-upload.directive":21,"./services/profile.service":23,"angular":27}],23:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -906,7 +1075,7 @@ ProfileService.$inject = ['$firebaseArray', '$state', '$firebaseObject'];
 exports['default'] = ProfileService;
 module.exports = exports['default'];
 
-},{}],21:[function(require,module,exports){
+},{}],24:[function(require,module,exports){
 'use strict';
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
@@ -945,7 +1114,7 @@ _firebase2['default'].initializeApp(fireConfig);
 
 _angular2['default'].module('app', ['app.core', 'app.profile', 'app.bosses', 'ui.router', 'firebase']);
 
-},{"./app-bosses/index":5,"./app-core/index":12,"./app-profile/index":19,"angular":24,"angular-ui-router":22,"angularfire":26,"firebase":27,"jquery":29}],22:[function(require,module,exports){
+},{"./app-bosses/index":5,"./app-core/index":14,"./app-profile/index":22,"angular":27,"angular-ui-router":25,"angularfire":29,"firebase":30,"jquery":32}],25:[function(require,module,exports){
 /**
  * State-based routing for AngularJS
  * @version v0.3.1
@@ -5522,7 +5691,7 @@ angular.module('ui.router.state')
   .filter('isState', $IsStateFilter)
   .filter('includedByState', $IncludedByStateFilter);
 })(window, window.angular);
-},{}],23:[function(require,module,exports){
+},{}],26:[function(require,module,exports){
 /**
  * @license AngularJS v1.5.8
  * (c) 2010-2016 Google, Inc. http://angularjs.org
@@ -37291,11 +37460,11 @@ $provide.value("$locale", {
 })(window);
 
 !window.angular.$$csp().noInlineStyle && window.angular.element(document.head).prepend('<style type="text/css">@charset "UTF-8";[ng\\:cloak],[ng-cloak],[data-ng-cloak],[x-ng-cloak],.ng-cloak,.x-ng-cloak,.ng-hide:not(.ng-hide-animate){display:none !important;}ng\\:form{display:block;}.ng-animate-shim{visibility:hidden;}.ng-anchor{position:absolute;}</style>');
-},{}],24:[function(require,module,exports){
+},{}],27:[function(require,module,exports){
 require('./angular');
 module.exports = angular;
 
-},{"./angular":23}],25:[function(require,module,exports){
+},{"./angular":26}],28:[function(require,module,exports){
 /*!
  * AngularFire is the officially supported AngularJS binding for Firebase. Firebase
  * is a full backend so you don't need servers to build your Angular app. AngularFire
@@ -39563,7 +39732,7 @@ if ( typeof Object.getPrototypeOf !== "function" ) {
     }
 })();
 
-},{}],26:[function(require,module,exports){
+},{}],29:[function(require,module,exports){
 // Make sure dependencies are loaded on the window
 require('angular');
 require('firebase');
@@ -39574,7 +39743,7 @@ require('./dist/angularfire');
 // Export the module name from the Angular module
 module.exports = 'firebase';
 
-},{"./dist/angularfire":25,"angular":24,"firebase":27}],27:[function(require,module,exports){
+},{"./dist/angularfire":28,"angular":27,"firebase":30}],30:[function(require,module,exports){
 /**
  *  Firebase libraries for browser - npm package.
  *
@@ -39585,7 +39754,7 @@ module.exports = 'firebase';
 require('./firebase');
 module.exports = firebase;
 
-},{"./firebase":28}],28:[function(require,module,exports){
+},{"./firebase":31}],31:[function(require,module,exports){
 (function (global){
 /*! @license Firebase v3.3.0
     Build: 3.3.0-rc.7
@@ -40166,7 +40335,7 @@ ta.STATE_CHANGED="state_changed";ua.RUNNING="running";ua.PAUSED="paused";ua.SUCC
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 
-},{}],29:[function(require,module,exports){
+},{}],32:[function(require,module,exports){
 /*!
  * jQuery JavaScript Library v2.2.4
  * http://jquery.com/
@@ -49982,7 +50151,7 @@ if ( !noGlobal ) {
 return jQuery;
 }));
 
-},{}]},{},[21])
+},{}]},{},[24])
 
 
 //# sourceMappingURL=main.js.map

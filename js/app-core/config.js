@@ -12,6 +12,12 @@ let config = function($stateProvider, $urlRouterProvider){
 			url: '/',
 			controller: 'DashCtrl',
 			templateUrl: 'templates/app-core/dash.html'
+	
+		})
+		.state('root.editDash', {
+			url: '/editdash',
+			controller: 'EditDashCtrl',
+			templateUrl: 'templates/app-core/edit-dash.html'
 		})
 		.state('login', {
 			url: '/login',
