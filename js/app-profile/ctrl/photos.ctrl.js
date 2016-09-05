@@ -1,4 +1,4 @@
-let PhotosCtrl = function($scope, ProfileService){
+let PhotosCtrl = function($scope, ProfileService, $state){
 
 	firebase.auth().onAuthStateChanged(function(user){
 		if (user) {
@@ -29,10 +29,13 @@ let PhotosCtrl = function($scope, ProfileService){
 							urlArray.push(url);
 							$scope.$apply(function(){
 								$scope.url = urlArray;
+
 							})
 						})
 
 					}
+							
+
 				}
 			});
 		} else {
@@ -40,7 +43,12 @@ let PhotosCtrl = function($scope, ProfileService){
 		}
 	})
 
+	$scope.singlePhoto = function(url){
+		// console.log(url);
+		$state.go('root.photo', {myParam: {url: url}})
+	}
+
 
 };
-PhotosCtrl.$inject = ['$scope', 'ProfileService'];
+PhotosCtrl.$inject = ['$scope', 'ProfileService', '$state'];
 export default PhotosCtrl;

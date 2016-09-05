@@ -3,6 +3,7 @@ import angular from 'angular';
 import ProfileCtrl from './ctrl/profile.ctrl';
 import EditProfileCtrl from './ctrl/edit-profile.ctrl';
 import PhotosCtrl from './ctrl/photos.ctrl';
+import PhotoCtrl from './ctrl/photo.ctrl';
 
 //SERVICES
 import ProfileService from './services/profile.service';
@@ -17,6 +18,7 @@ angular
 	.controller('ProfileCtrl', ProfileCtrl)
 	.controller('EditProfileCtrl', EditProfileCtrl)
 	.controller('PhotosCtrl', PhotosCtrl)
+	.controller('PhotoCtrl', PhotoCtrl)
 	.service('ProfileService', ProfileService)
 	.directive('fileUpload', fileUpload)
 ;

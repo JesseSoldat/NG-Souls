@@ -65,6 +65,12 @@ let config = function($stateProvider, $urlRouterProvider){
 			controller: 'PhotosCtrl',
 			templateUrl: 'templates/app-profile/photos.html'
 		})
+		.state('root.photo', {
+			url: '/photo',
+			controller: 'PhotoCtrl',
+			templateUrl: 'templates/app-profile/photo.html',
+			params: {myParam: null}
+		})
 		//APP-BOSSES-----------------------------
 		.state('root.bosses', {
 			url: '/bosses',
