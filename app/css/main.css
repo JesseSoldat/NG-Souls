@@ -8724,4 +8724,14 @@ nav {
   margin: 0 auto;
   width: 90%; }
 
+.layoutBoss {
+  width: 100%; }
+  .layoutBoss h2 {
+    display: inline-block;
+    margin-right: 3%; }
+  .layoutBoss button {
+    display: inline-block;
+    vertical-align: middle;
+    margin-right: 1%; }
+
 /*# sourceMappingURL=main.css.map */

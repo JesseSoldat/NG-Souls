@@ -10,6 +10,8 @@ let ProfileCtrl = function($state, $scope, ProfileService){
 				if(currentUser.length > 0){
 					$scope.data = currentUser;
 					$scope.haveBio = true;
+				} else {
+
 				}
 
 			})
@@ -23,6 +25,8 @@ let ProfileCtrl = function($state, $scope, ProfileService){
 					$scope.avatar = avatarData[0].$value;
 					$scope.haveAvatar = true;
 
+				} else {
+					$scope.noAvatar = true;
 				}
 
 			});	

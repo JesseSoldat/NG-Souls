@@ -1,4 +1,12 @@
 let LoginCtrl = function($scope, $state, LoginService){
+	firebase.auth().onAuthStateChanged(function(user) {
+			if(user){
+				$state.go('root.dash');
+			}
+			else {
+			
+			}
+		});
 
 	$scope.login = function(userData){
 		
@@ -11,7 +19,7 @@ let LoginCtrl = function($scope, $state, LoginService){
 			else {
 			
 			}
-		})
+		});
 	}
 
 	$scope.register = function(userData) {

@@ -10,7 +10,7 @@
 			<h5>{{d.city}}</h5>
 			<hr>
 			<h5>{{d.state}}</h5>
-			<hr>
+			<hr> 
 			<h5>{{d.zip}}</h5>
 			<hr>
 			<h5>{{d.country}}</h5>
@@ -23,8 +23,8 @@
 			<i class="fa fa-spinner fa-spin fa-3x fa-fw"></i>
 			<span class="sr-only">Loading...</span>
 		</div>
-		<img ng-if="haveAvatar" ng-src="{{avatar}}" class="right profileImg">
-		<img ng-if="!haveAvatar" ng-src="../img/darkSoulsAvatar.jpg" class="right profileImg">
+		<img ng-show="haveAvatar" ng-src="{{avatar}}" class="right profileImg">
+		<img ng-show="noAvatar" ng-src="../img/darkSoulsAvatar.jpg" class="right profileImg">
 	<hr>
 	<button class="small button" ng-click="editProfile()">Edit Profile</button>	
 

@@ -385,6 +385,11 @@ Object.defineProperty(exports, '__esModule', {
 	value: true
 });
 var LoginCtrl = function LoginCtrl($scope, $state, LoginService) {
+	firebase.auth().onAuthStateChanged(function (user) {
+		if (user) {
+			$state.go('root.dash');
+		} else {}
+	});
 
 	$scope.login = function (userData) {
 
@@ -611,7 +616,9 @@ var DashService = function DashService($firebaseArray, $state, $firebaseObject) 
 		uploadTask.on('state_changed', function (snapshot) {
 			var percent = snapshot.bytesTransferred / snapshot.totalBytes * 100;
 			uploader.value = percent;
-		}, function error(err) {}, function complete() {});
+		}, function error(err) {}, function complete() {
+			$state.go('root.dash');
+		});
 		//Save URL to DATABASE
 		var url = dashRef.getDownloadURL().then(function (url) {
 			var ref = firebase.database().ref('users/' + user.uid + '/dashImg');
@@ -731,6 +738,9 @@ var PhotoCtrl = function PhotoCtrl($scope, ProfileService, $stateParams, $state)
 			};
 		})();
 	}
+	$scope.goBack = function (state) {
+		$state.go(state);
+	};
 };
 PhotoCtrl.$inject = ['$scope', 'ProfileService', '$stateParams', '$state'];
 
@@ -812,7 +822,7 @@ var ProfileCtrl = function ProfileCtrl($state, $scope, ProfileService) {
 					if (currentUser.length > 0) {
 						$scope.data = currentUser;
 						$scope.haveBio = true;
-					}
+					} else {}
 				});
 
 				var avatarData = ProfileService.getAvatar(user);
@@ -822,6 +832,8 @@ var ProfileCtrl = function ProfileCtrl($state, $scope, ProfileService) {
 					if (avatarData.length > 0) {
 						$scope.avatar = avatarData[0].$value;
 						$scope.haveAvatar = true;
+					} else {
+						$scope.noAvatar = true;
 					}
 				});
 			})();
@@ -992,49 +1004,48 @@ var ProfileService = function ProfileService($firebaseArray, $state, $firebaseOb
 		var fileName = file.name;
 
 		if (avatar === "avatar") {
+			(function () {
 
-			var ext = fileName.substring(fileName.lastIndexOf(".") + 1).toLowerCase();
+				var ext = fileName.substring(fileName.lastIndexOf(".") + 1).toLowerCase();
 
-			var avatarRef = storageRef.child(user.uid + '/avatar/' + 'avatar.' + ext);
-			var uploadTask = avatarRef.put(file);
+				var avatarRef = storageRef.child(user.uid + '/avatar/' + 'avatar.' + ext);
+				var uploadTask = avatarRef.put(file);
 
-			uploadTask.on('state_changed', function progress(snapshot) {
-				var percent = snapshot.bytesTransferred / snapshot.totalBytes * 100;
-				uploader.value = percent;
-			}, function error(err) {}, function complete() {});
+				uploadTask.on('state_changed', function progress(snapshot) {
+					var percent = snapshot.bytesTransferred / snapshot.totalBytes * 100;
+					uploader.value = percent;
+				}, function error(err) {}, function complete() {
 
-			//-----------------------------------------
-			//Get Avatar to save the URL to the Database
-
-			var url = avatarRef.getDownloadURL().then(function (url) {
-				console.log(url);
-				var ref = firebase.database().ref('users/' + user.uid + '/avatar');
-				var obj = $firebaseObject(ref);
-				obj.url = url;
-				obj.$save().then(function (ref) {
-					ref.key === obj.$id; // true
-				}, function (error) {
-					console.log("Error:", error);
-				});
-			})['catch'](function (error) {
-				switch (error.code) {
-					case 'storage/object_not_found':
-						// File doesn't exist
-						break;
-					case 'storage/unauthorized':
-						// User doesn't have permission to access the object
-						break;
-					case 'storage/canceled':
-						// User canceled the upload
-						break;
-					case 'storage/unknown':
-						// Unknown error occurred, inspect the server response
-						break;
-				}
-			});
-
-			//-----------------------------------------
-		}
+					//Get Avatar to save the URL to the Database
+					var url = avatarRef.getDownloadURL().then(function (url) {
+						console.log(url);
+						var ref = firebase.database().ref('users/' + user.uid + '/avatar');
+						var obj = $firebaseObject(ref);
+						obj.url = url;
+						obj.$save().then(function (ref) {
+							ref.key === obj.$id; // true
+						}, function (error) {
+							console.log("Error:", error);
+						});
+					})['catch'](function (error) {
+						switch (error.code) {
+							case 'storage/object_not_found':
+								// File doesn't exist
+								break;
+							case 'storage/unauthorized':
+								// User doesn't have permission to access the object
+								break;
+							case 'storage/canceled':
+								// User canceled the upload
+								break;
+							case 'storage/unknown':
+								// Unknown error occurred, inspect the server response
+								break;
+						}
+					}); //getDownloadUrl
+				}); //uploadTask
+			})();
+		} //if
 
 		if (avatar === 'photos') {
 

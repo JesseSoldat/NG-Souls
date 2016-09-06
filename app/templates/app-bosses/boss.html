@@ -7,19 +7,15 @@
 
 <!-- RETURN $firebaseObject -->
 <div class="singleBoss">
-	<h1>Boss</h1>
+	<div  class="layoutBoss">
+		<h2>{{boss.name}}</h2>
+		<button class="small button" ng-click="editBoss(boss.$id)">Edit</button>
+		<button class="alert small button" ng-click="deleteBoss(boss.$id)">Delete</button>	
+	</div>
 	<hr>
-	<h4>{{boss.name}}</h4>
 	<img ng-src="{{boss.url}}">	
-
 </div>
-
-
-
 <hr>
-<div class="layoutBtns">
-	<button class="small button" ng-click="editBoss(boss.$id)">Edit</button>
-	<button class="alert small button" ng-click="deleteBoss(boss.$id)">Delete</button>	
-</div>
+
 
 <!-- <h4>{{bossid}}</h4> -->

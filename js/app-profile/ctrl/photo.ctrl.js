@@ -12,6 +12,9 @@ let PhotoCtrl = function($scope, ProfileService, $stateParams, $state) {
 			console.log('deleted: ' + photoUrl);
 		}
 	}
+	$scope.goBack = function(state){
+		$state.go(state);
+	}
 
 
 };

@@ -28,7 +28,7 @@ let DashService = function($firebaseArray, $state, $firebaseObject){
 
 			},
 			function complete(){
-
+				$state.go('root.dash');
 			});
 		//Save URL to DATABASE
 		let url = dashRef.getDownloadURL().then(function(url){
