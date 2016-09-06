@@ -123,7 +123,7 @@ var _servicesBossesService2 = _interopRequireDefault(_servicesBossesService);
 
 _angular2['default'].module('app.bosses', []).controller('BossesCtrl', _ctrlBossesCtrl2['default']).controller('BossCtrl', _ctrlBossCtrl2['default']).controller('AddBossCtrl', _ctrlAddBossCtrl2['default']).controller('EditBossCtrl', _ctrlEditBossCtrl2['default']).service('BossesService', _servicesBossesService2['default']);
 
-},{"./ctrl/add-boss.ctrl":1,"./ctrl/boss.ctrl":2,"./ctrl/bosses.ctrl":3,"./ctrl/edit-boss.ctrl":4,"./services/bosses.service":6,"angular":27}],6:[function(require,module,exports){
+},{"./ctrl/add-boss.ctrl":1,"./ctrl/boss.ctrl":2,"./ctrl/bosses.ctrl":3,"./ctrl/edit-boss.ctrl":4,"./services/bosses.service":6,"angular":29}],6:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -209,7 +209,6 @@ var config = function config($stateProvider, $urlRouterProvider) {
 		url: '/',
 		controller: 'DashCtrl',
 		templateUrl: 'templates/app-core/dash.html'
-
 	}).state('root.editDash', {
 		url: '/editdash',
 		controller: 'EditDashCtrl',
@@ -222,7 +221,9 @@ var config = function config($stateProvider, $urlRouterProvider) {
 		url: '/register',
 		templateUrl: 'templates/app-core/register.html',
 		controller: 'LoginCtrl'
-	}).state('root.playground', {
+	})
+	//Testing Features
+	.state('root.playground', {
 		url: '/playground',
 		controller: 'PlaygroundCtrl',
 		templateUrl: 'templates/app-core/playground.html',
@@ -245,8 +246,11 @@ var config = function config($stateProvider, $urlRouterProvider) {
 				var obj = $firebaseObject(ref);
 				return obj.$loaded();
 			}
-
 		}
+	}).state('root.chat', {
+		url: '/chat',
+		controller: 'ChatCtrl',
+		templateUrl: 'templates/app-core/chat.html'
 	})
 	//APP-PROFILE----------------------------
 	.state('root.profile', {
@@ -298,6 +302,42 @@ module.exports = exports['default'];
 Object.defineProperty(exports, '__esModule', {
 	value: true
 });
+var ChatCtrl = function ChatCtrl($scope, ChatService) {
+
+	$scope.user = 'Guest ' + Math.round(Math.random() * 100);
+	$scope.messages = ChatService;
+
+	// calling $add on a synchronized array is like Array.push()
+	$scope.addMessage = function () {
+		$scope.messages.$add({
+			from: $scope.user,
+			content: $scope.message
+		});
+		//reset the message input
+		$scope.message = '';
+	};
+
+	//if there are no messages
+	$scope.messages.$loaded(function () {
+		if ($scope.messages.length === 0) {
+			console.log('no messages');
+			$scope.messages.$add({
+				from: 'JLab Inc.',
+				content: 'Enjoy chatting!'
+			});
+		}
+	});
+};
+ChatCtrl.$inject = ['$scope', 'ChatService'];
+exports['default'] = ChatCtrl;
+module.exports = exports['default'];
+
+},{}],9:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, '__esModule', {
+	value: true
+});
 var DashCtrl = function DashCtrl($firebaseArray, $scope, $state, DashService) {
 
 	firebase.auth().onAuthStateChanged(function (user) {
@@ -343,7 +383,7 @@ DashCtrl.$inject = ['$firebaseArray', '$scope', '$state', 'DashService'];
 exports['default'] = DashCtrl;
 module.exports = exports['default'];
 
-},{}],9:[function(require,module,exports){
+},{}],10:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -354,7 +394,7 @@ EditDashCtrl.$inject = ['$state'];
 exports['default'] = EditDashCtrl;
 module.exports = exports['default'];
 
-},{}],10:[function(require,module,exports){
+},{}],11:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -378,7 +418,7 @@ LayoutCtrl.$inject = ['$state', '$scope'];
 exports['default'] = LayoutCtrl;
 module.exports = exports['default'];
 
-},{}],11:[function(require,module,exports){
+},{}],12:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -413,7 +453,7 @@ LoginCtrl.$inject = ['$scope', '$state', 'LoginService'];
 exports['default'] = LoginCtrl;
 module.exports = exports['default'];
 
-},{}],12:[function(require,module,exports){
+},{}],13:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -495,7 +535,7 @@ PlaygroundCtrl.$inject = ['$scope', '$firebaseArray', '$firebaseObject', 'simple
 exports['default'] = PlaygroundCtrl;
 module.exports = exports['default'];
 
-},{}],13:[function(require,module,exports){
+},{}],14:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -531,7 +571,8 @@ dashUpload.$inject = ['DashService'];
 exports['default'] = dashUpload;
 module.exports = exports['default'];
 
-},{}],14:[function(require,module,exports){
+},{}],15:[function(require,module,exports){
+//Libraries
 'use strict';
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
@@ -564,9 +605,15 @@ var _ctrlEditDashCtrl = require('./ctrl/edit-dash.ctrl');
 
 var _ctrlEditDashCtrl2 = _interopRequireDefault(_ctrlEditDashCtrl);
 
+//TESTING FEATURES
+
 var _ctrlPlaygroundCtrl = require('./ctrl/playground.ctrl');
 
 var _ctrlPlaygroundCtrl2 = _interopRequireDefault(_ctrlPlaygroundCtrl);
+
+var _ctrlChatCtrl = require('./ctrl/chat.ctrl');
+
+var _ctrlChatCtrl2 = _interopRequireDefault(_ctrlChatCtrl);
 
 //SERVICES
 
@@ -578,15 +625,42 @@ var _servicesDashService = require('./services/dash.service');
 
 var _servicesDashService2 = _interopRequireDefault(_servicesDashService);
 
+//TESTING FEATURES
+
+var _servicesChatService = require('./services/chat.service');
+
+var _servicesChatService2 = _interopRequireDefault(_servicesChatService);
+
 //DIRECTIVES
 
 var _directivesDashUploadDirective = require('./directives/dash-upload.directive');
 
 var _directivesDashUploadDirective2 = _interopRequireDefault(_directivesDashUploadDirective);
 
-_angular2['default'].module('app.core', ['ui.router']).config(_config2['default']).controller('LayoutCtrl', _ctrlLayoutCtrl2['default']).controller('LoginCtrl', _ctrlLoginCtrl2['default']).controller('DashCtrl', _ctrlDashCtrl2['default']).controller('EditDashCtrl', _ctrlEditDashCtrl2['default']).controller('PlaygroundCtrl', _ctrlPlaygroundCtrl2['default']).service('LoginService', _servicesLoginService2['default']).service('DashService', _servicesDashService2['default']).directive('dashUpload', _directivesDashUploadDirective2['default']);
+_angular2['default'].module('app.core', ['ui.router']).config(_config2['default']).controller('LayoutCtrl', _ctrlLayoutCtrl2['default']).controller('LoginCtrl', _ctrlLoginCtrl2['default']).controller('DashCtrl', _ctrlDashCtrl2['default']).controller('EditDashCtrl', _ctrlEditDashCtrl2['default'])
+//Testing Features
+.controller('PlaygroundCtrl', _ctrlPlaygroundCtrl2['default']).controller('ChatCtrl', _ctrlChatCtrl2['default']).service('LoginService', _servicesLoginService2['default']).service('DashService', _servicesDashService2['default'])
 
-},{"./config":7,"./ctrl/dash.ctrl":8,"./ctrl/edit-dash.ctrl":9,"./ctrl/layout.ctrl":10,"./ctrl/login.ctrl":11,"./ctrl/playground.ctrl":12,"./directives/dash-upload.directive":13,"./services/dash.service":15,"./services/login.service":16,"angular":27,"angular-ui-router":25}],15:[function(require,module,exports){
+//Testing Features
+.service('ChatService', _servicesChatService2['default']).directive('dashUpload', _directivesDashUploadDirective2['default']);
+
+},{"./config":7,"./ctrl/chat.ctrl":8,"./ctrl/dash.ctrl":9,"./ctrl/edit-dash.ctrl":10,"./ctrl/layout.ctrl":11,"./ctrl/login.ctrl":12,"./ctrl/playground.ctrl":13,"./directives/dash-upload.directive":14,"./services/chat.service":16,"./services/dash.service":17,"./services/login.service":18,"angular":29,"angular-ui-router":27}],16:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, '__esModule', {
+	value: true
+});
+var ChatService = function ChatService($firebaseArray) {
+
+	var ref = firebase.database().ref('chat');
+
+	return $firebaseArray(ref);
+};
+ChatService.$inject = ['$firebaseArray'];
+exports['default'] = ChatService;
+module.exports = exports['default'];
+
+},{}],17:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -651,7 +725,7 @@ DashService.$inject = ['$firebaseArray', '$state', '$firebaseObject'];
 exports['default'] = DashService;
 module.exports = exports['default'];
 
-},{}],16:[function(require,module,exports){
+},{}],18:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -682,7 +756,7 @@ LoginService.$inject = [];
 exports["default"] = LoginService;
 module.exports = exports["default"];
 
-},{}],17:[function(require,module,exports){
+},{}],19:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -716,7 +790,7 @@ EditProfileCtrl.$inject = ['$scope', '$state', 'ProfileService'];
 exports['default'] = EditProfileCtrl;
 module.exports = exports['default'];
 
-},{}],18:[function(require,module,exports){
+},{}],20:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -747,7 +821,7 @@ PhotoCtrl.$inject = ['$scope', 'ProfileService', '$stateParams', '$state'];
 exports['default'] = PhotoCtrl;
 module.exports = exports['default'];
 
-},{}],19:[function(require,module,exports){
+},{}],21:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -803,7 +877,7 @@ PhotosCtrl.$inject = ['$scope', 'ProfileService', '$state'];
 exports['default'] = PhotosCtrl;
 module.exports = exports['default'];
 
-},{}],20:[function(require,module,exports){
+},{}],22:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -849,7 +923,7 @@ ProfileCtrl.$inject = ['$state', '$scope', 'ProfileService'];
 exports['default'] = ProfileCtrl;
 module.exports = exports['default'];
 
-},{}],21:[function(require,module,exports){
+},{}],23:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -883,7 +957,7 @@ fileUpload.$inject = ['ProfileService'];
 exports['default'] = fileUpload;
 module.exports = exports['default'];
 
-},{}],22:[function(require,module,exports){
+},{}],24:[function(require,module,exports){
 'use strict';
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
@@ -924,7 +998,7 @@ var _directivesFileUploadDirective2 = _interopRequireDefault(_directivesFileUplo
 
 _angular2['default'].module('app.profile', []).controller('ProfileCtrl', _ctrlProfileCtrl2['default']).controller('EditProfileCtrl', _ctrlEditProfileCtrl2['default']).controller('PhotosCtrl', _ctrlPhotosCtrl2['default']).controller('PhotoCtrl', _ctrlPhotoCtrl2['default']).service('ProfileService', _servicesProfileService2['default']).directive('fileUpload', _directivesFileUploadDirective2['default']);
 
-},{"./ctrl/edit-profile.ctrl":17,"./ctrl/photo.ctrl":18,"./ctrl/photos.ctrl":19,"./ctrl/profile.ctrl":20,"./directives/file-upload.directive":21,"./services/profile.service":23,"angular":27}],23:[function(require,module,exports){
+},{"./ctrl/edit-profile.ctrl":19,"./ctrl/photo.ctrl":20,"./ctrl/photos.ctrl":21,"./ctrl/profile.ctrl":22,"./directives/file-upload.directive":23,"./services/profile.service":25,"angular":29}],25:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -1018,12 +1092,13 @@ var ProfileService = function ProfileService($firebaseArray, $state, $firebaseOb
 
 					//Get Avatar to save the URL to the Database
 					var url = avatarRef.getDownloadURL().then(function (url) {
-						console.log(url);
+
 						var ref = firebase.database().ref('users/' + user.uid + '/avatar');
 						var obj = $firebaseObject(ref);
 						obj.url = url;
 						obj.$save().then(function (ref) {
 							ref.key === obj.$id; // true
+							$state.go('root.profile');
 						}, function (error) {
 							console.log("Error:", error);
 						});
@@ -1065,7 +1140,7 @@ var ProfileService = function ProfileService($firebaseArray, $state, $firebaseOb
 				var percent = snapshot.bytesTransferred / snapshot.totalBytes * 100;
 				uploader.value = percent;
 			}, function error(err) {}, function complete() {
-				$state.go('root.dash');
+				$state.go('root.photos');
 			});
 		}
 	}
@@ -1091,7 +1166,7 @@ ProfileService.$inject = ['$firebaseArray', '$state', '$firebaseObject'];
 exports['default'] = ProfileService;
 module.exports = exports['default'];
 
-},{}],24:[function(require,module,exports){
+},{}],26:[function(require,module,exports){
 'use strict';
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
@@ -1130,7 +1205,7 @@ _firebase2['default'].initializeApp(fireConfig);
 
 _angular2['default'].module('app', ['app.core', 'app.profile', 'app.bosses', 'ui.router', 'firebase']);
 
-},{"./app-bosses/index":5,"./app-core/index":14,"./app-profile/index":22,"angular":27,"angular-ui-router":25,"angularfire":29,"firebase":30,"jquery":32}],25:[function(require,module,exports){
+},{"./app-bosses/index":5,"./app-core/index":15,"./app-profile/index":24,"angular":29,"angular-ui-router":27,"angularfire":31,"firebase":32,"jquery":34}],27:[function(require,module,exports){
 /**
  * State-based routing for AngularJS
  * @version v0.3.1
@@ -5707,7 +5782,7 @@ angular.module('ui.router.state')
   .filter('isState', $IsStateFilter)
   .filter('includedByState', $IncludedByStateFilter);
 })(window, window.angular);
-},{}],26:[function(require,module,exports){
+},{}],28:[function(require,module,exports){
 /**
  * @license AngularJS v1.5.8
  * (c) 2010-2016 Google, Inc. http://angularjs.org
@@ -37476,11 +37551,11 @@ $provide.value("$locale", {
 })(window);
 
 !window.angular.$$csp().noInlineStyle && window.angular.element(document.head).prepend('<style type="text/css">@charset "UTF-8";[ng\\:cloak],[ng-cloak],[data-ng-cloak],[x-ng-cloak],.ng-cloak,.x-ng-cloak,.ng-hide:not(.ng-hide-animate){display:none !important;}ng\\:form{display:block;}.ng-animate-shim{visibility:hidden;}.ng-anchor{position:absolute;}</style>');
-},{}],27:[function(require,module,exports){
+},{}],29:[function(require,module,exports){
 require('./angular');
 module.exports = angular;
 
-},{"./angular":26}],28:[function(require,module,exports){
+},{"./angular":28}],30:[function(require,module,exports){
 /*!
  * AngularFire is the officially supported AngularJS binding for Firebase. Firebase
  * is a full backend so you don't need servers to build your Angular app. AngularFire
@@ -39748,7 +39823,7 @@ if ( typeof Object.getPrototypeOf !== "function" ) {
     }
 })();
 
-},{}],29:[function(require,module,exports){
+},{}],31:[function(require,module,exports){
 // Make sure dependencies are loaded on the window
 require('angular');
 require('firebase');
@@ -39759,7 +39834,7 @@ require('./dist/angularfire');
 // Export the module name from the Angular module
 module.exports = 'firebase';
 
-},{"./dist/angularfire":28,"angular":27,"firebase":30}],30:[function(require,module,exports){
+},{"./dist/angularfire":30,"angular":29,"firebase":32}],32:[function(require,module,exports){
 /**
  *  Firebase libraries for browser - npm package.
  *
@@ -39770,7 +39845,7 @@ module.exports = 'firebase';
 require('./firebase');
 module.exports = firebase;
 
-},{"./firebase":31}],31:[function(require,module,exports){
+},{"./firebase":33}],33:[function(require,module,exports){
 (function (global){
 /*! @license Firebase v3.3.0
     Build: 3.3.0-rc.7
@@ -40351,7 +40426,7 @@ ta.STATE_CHANGED="state_changed";ua.RUNNING="running";ua.PAUSED="paused";ua.SUCC
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 
-},{}],32:[function(require,module,exports){
+},{}],34:[function(require,module,exports){
 /*!
  * jQuery JavaScript Library v2.2.4
  * http://jquery.com/
@@ -50167,7 +50242,7 @@ if ( !noGlobal ) {
 return jQuery;
 }));
 
-},{}]},{},[24])
+},{}]},{},[26])
 
 
 //# sourceMappingURL=main.js.map

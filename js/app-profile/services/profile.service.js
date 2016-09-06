@@ -92,12 +92,13 @@ let ProfileService = function($firebaseArray, $state, $firebaseObject){
 
 				//Get Avatar to save the URL to the Database
 				let url = avatarRef.getDownloadURL().then(function(url) {
-					console.log(url);
+				
 					let ref = firebase.database().ref('users/' +user.uid+ '/avatar');
 					let obj = $firebaseObject(ref);
 					obj.url = url;
 					obj.$save().then(function(ref) {
 					  ref.key === obj.$id; // true
+					  $state.go('root.profile');
 				}, function(error) {
 				  console.log("Error:", error);
 				});
@@ -146,7 +147,7 @@ let ProfileService = function($firebaseArray, $state, $firebaseObject){
 				function error(err){
 				},
 				function complete(){
-					$state.go('root.dash');
+					$state.go('root.photos');
 				}
 			);
 		}

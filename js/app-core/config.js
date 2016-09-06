@@ -12,7 +12,6 @@ let config = function($stateProvider, $urlRouterProvider){
 			url: '/',
 			controller: 'DashCtrl',
 			templateUrl: 'templates/app-core/dash.html'
-	
 		})
 		.state('root.editDash', {
 			url: '/editdash',
@@ -29,6 +28,7 @@ let config = function($stateProvider, $urlRouterProvider){
 			templateUrl: 'templates/app-core/register.html',
 			controller: 'LoginCtrl'
 		})
+		//Testing Features
 		.state('root.playground', {
 			url: '/playground',
 			controller: 'PlaygroundCtrl',
@@ -52,8 +52,12 @@ let config = function($stateProvider, $urlRouterProvider){
          			let obj = $firebaseObject(ref);
          			return obj.$loaded();
          		}
-
 			}
+		})
+		.state('root.chat', {
+			url: '/chat',
+			controller: 'ChatCtrl',
+			templateUrl: 'templates/app-core/chat.html'
 		})
 		//APP-PROFILE----------------------------
 		.state('root.profile', {

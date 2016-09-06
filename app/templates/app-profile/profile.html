@@ -1,5 +1,8 @@
 <div class="profileWrapper">
-	<h3>Profile</h3>
+	<div class="layoutProfile">
+		<h3>Profile</h3>
+		<button class="small button" ng-click="editProfile()">Edit Profile</button>	
+	</div>
 	<hr>
 	<div ng-repeat="d in data">
 		<div class="left profileInfo">
@@ -26,7 +29,7 @@
 		<img ng-show="haveAvatar" ng-src="{{avatar}}" class="right profileImg">
 		<img ng-show="noAvatar" ng-src="../img/darkSoulsAvatar.jpg" class="right profileImg">
 	<hr>
-	<button class="small button" ng-click="editProfile()">Edit Profile</button>	
+	
 
 </div>
 

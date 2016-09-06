@@ -46,8 +46,6 @@ nav {
 	}
 }
 
-
-
 //FILE-UPLOAD DIRECTIVE-----------------------------
 .fileUploadProgress {
 	display: inline-block;
@@ -127,7 +125,23 @@ nav {
 .profileWrapper {
 	width: 80%;
 	margin: 0 auto;
-	margin-top: 4%;
+	margin-top: 1%;
+
+	.layoutProfile {
+		h3 {
+			display: inline-block;
+			margin-right: 3%;
+			margin-left: 0;
+			margin-top: 0;
+			margin-bottom: 0;
+		}
+		button {
+			vertical-align: middle;
+			display: inline-block;
+			margin-top: 0;
+			margin-bottom: 0;
+		}
+	}
 
 }
 .profileInfo {
@@ -140,10 +154,29 @@ nav {
 	width: 40%; 
 }
 //Edit PROFILE--------------------------------------
-.layoutProfile {
+.layoutEditProfile {
 	width: 80%;
 	margin: 0 auto;
 	margin-top: 2%;
+}
+.layoutAvatar {
+	width: 80%;
+	margin: 0 auto;
+	margin-top: .5%;
+	
+
+	#fileUploadControls {
+		display: inline-block;
+		width: 60%;
+
+		progress {
+			width: 90%;
+		}
+	}
+	button {
+		display: inline-block;
+		vertical-align: top;	
+	}
 }
 //Photos---------------------------------------------
 .layoutPhotos {
@@ -168,20 +201,16 @@ nav {
 	
 }
 
-
 // BOSSES---------------------------------------------
 #addBosses {
 	h1 {
 		display: inline-block;
 		vertical-align: middle;
-		margin-right: 3%;
-		
+		margin-right: 3%;		
 	}
 	button {
 
 		display: inline-block;
-		
-
 	}
 }
 .bosses {
@@ -190,16 +219,10 @@ nav {
 	height: 270px;
 	margin: 1% 1.5%;
 	overflow: hidden;
-	// background: black;
-
-
-
 
 	h4 {
 		text-align: center;
 		font-size: 1.1em;
-		// color: white;
-
 	}
 	img {
 	display: block;

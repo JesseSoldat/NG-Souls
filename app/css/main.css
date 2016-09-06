@@ -8668,7 +8668,18 @@ nav {
 .profileWrapper {
   width: 80%;
   margin: 0 auto;
-  margin-top: 4%; }
+  margin-top: 1%; }
+  .profileWrapper .layoutProfile h3 {
+    display: inline-block;
+    margin-right: 3%;
+    margin-left: 0;
+    margin-top: 0;
+    margin-bottom: 0; }
+  .profileWrapper .layoutProfile button {
+    vertical-align: middle;
+    display: inline-block;
+    margin-top: 0;
+    margin-bottom: 0; }
 
 .profileInfo {
   width: 40%; }
@@ -8678,10 +8689,23 @@ nav {
 .profileImg {
   width: 40%; }
 
-.layoutProfile {
+.layoutEditProfile {
   width: 80%;
   margin: 0 auto;
   margin-top: 2%; }
+
+.layoutAvatar {
+  width: 80%;
+  margin: 0 auto;
+  margin-top: .5%; }
+  .layoutAvatar #fileUploadControls {
+    display: inline-block;
+    width: 60%; }
+    .layoutAvatar #fileUploadControls progress {
+      width: 90%; }
+  .layoutAvatar button {
+    display: inline-block;
+    vertical-align: top; }
 
 .layoutPhotos {
   width: 90%;
