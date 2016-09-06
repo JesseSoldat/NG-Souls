@@ -1,11 +1,9 @@
 let dashUpload = function(DashService){
 	return {
 		restrict: 'E',
-		replace: true,
 		scope: {
-			file: '=image',
 			type: '@'
-		},
+		}, 
 		template: `
 		<div class="layoutForm">
 			<form>
@@ -24,14 +22,15 @@ let dashUpload = function(DashService){
 		`,
 		link: function(scope, element, attrs, ctrl){
 
-			let uploader;
+			let uploader
+			let submitBtn;
 			element.on('click', function(){
-				let submit = angular.element(document.querySelector('#addPhotosBtn'));
+				submitBtn = document.querySelector('#addPhotosBtn');
 				uploader = document.getElementById('dashUploader');
 			});
-			element.on('submit', function(){
-				
+			element.on('submit', function(){	
 				let file = element.find('input')[0].files[0];
+				submitBtn.disabled = true;
 				DashService.fileUpload(file, uploader);
 			});
 		}

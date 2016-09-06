@@ -8617,7 +8617,6 @@ nav {
   width: 40%; }
 
 #dashBackground {
-  background-image: url("../img/darkSoulsBackground.jpg");
   width: 100%;
   background-size: 100%;
   background-repeat: no-repeat;
@@ -8626,20 +8625,6 @@ nav {
   -webkit-transition: all 2s ease 2s;
   transition: all 2s ease 2s; }
   #dashBackground button {
-    position: absolute;
-    top: 1%;
-    left: 3%;
-    opacity: 0; }
-
-#dashBackground2 {
-  width: 100%;
-  background-size: 100%;
-  background-repeat: no-repeat;
-  height: 900px;
-  position: relative;
-  -webkit-transition: all 2s ease 2s;
-  transition: all 2s ease 2s; }
-  #dashBackground2 button {
     position: absolute;
     top: 1%;
     left: 3%;

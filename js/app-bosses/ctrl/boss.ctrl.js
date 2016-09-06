@@ -1,16 +1,13 @@
 let BossCtrl = function($scope, $state, $stateParams, BossesService){
-
-
+	//get the id of the boss from the url
 	let id = $stateParams.id;
 
-	let bossArray = BossesService.getBoss(id);
+	let bossObj = BossesService.getBoss(id);
 
-	$scope.bossid = id;
-	$scope.boss = bossArray;
+	$scope.boss = bossObj;
 
 	$scope.editBoss = function(boss){
-		$state.go('root.editBoss', {boss})
-		
+		$state.go('root.editBoss', {boss})	
 	}
 
 	$scope.deleteBoss = function(boss){

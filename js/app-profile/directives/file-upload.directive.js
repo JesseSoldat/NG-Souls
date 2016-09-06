@@ -1,9 +1,7 @@
 let fileUpload = function(ProfileService){
 	return {
 		restrict: 'E',
-		replace: true,
 		scope: {
-			file: '=image',
 			type: '@'
 		},
 		template: `
@@ -23,8 +21,9 @@ let fileUpload = function(ProfileService){
 		</div>
 		`,
 		link: function(scope, element, attrs, ctrl){
+			let submitBtn
 			element.on('click', function(){
-				let submit = angular.element(document.querySelector('#addPhotosBtn'));
+				submitBtn = document.querySelector('#addPhotosBtn');
 				let uploader = document.getElementById('uploader');
 
 
@@ -32,6 +31,7 @@ let fileUpload = function(ProfileService){
 			element.on('submit', function(){
 				
 				let file = element.find('input')[0].files[0];
+				submitBtn.disabled = true;
 				ProfileService.fileUpload(file, scope.type, uploader)
 			});
 		}

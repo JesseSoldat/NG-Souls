@@ -5,7 +5,6 @@ let AddBossCtrl = function($scope, $state, BossesService){
 
 		$state.go('root.bosses');
 	}
-
 };
 AddBossCtrl.$inject = ['$scope', '$state', 'BossesService'];
 

@@ -2,7 +2,6 @@ import angular from 'angular';
 import 'angular-ui-router';
 import firebase from 'firebase';
 import angularfire from 'angularfire';
-import $ from 'jquery';
 
 import './app-core/index';
 import './app-profile/index';

@@ -1,5 +1,4 @@
 let BossesService = function($firebaseArray, $firebaseObject, $state){
-
 	this.getBosses = getBosses;
 	this.getBoss = getBoss;
 	this.addBosses = addBosses;
@@ -15,15 +14,13 @@ let BossesService = function($firebaseArray, $firebaseObject, $state){
 
 	function getBoss(id){
 		let ref2 = firebase.database().ref('bosses/' + id);
-		let array2 = $firebaseArray(ref2);
 		let obj = $firebaseObject(ref2);
-		// return array2;
 		return obj;
-
+		// let array2 = $firebaseArray(ref2);
+		// return array2;
 	}
 
 	function addBosses(boss){
-	
 		array.$add({
 			name: boss.name,
 			url: boss.img
@@ -32,14 +29,14 @@ let BossesService = function($firebaseArray, $firebaseObject, $state){
 
 	function editBoss(boss){
 		let ref = firebase.database().ref('bosses/' + boss.$id);
-
 		let object = $firebaseObject(ref);
 
 		object.name = boss.name;
 		object.url = boss.url;
 		object.$save().then(function(ref) {
-  			ref.key === boss.$id; 
-  			$state.go('root.bosses');
+			if(ref.key === boss.$id) {
+  				$state.go('root.bosses');
+			}
 		}, function(error) {
  		 console.log("Error:", error);
 		});	
