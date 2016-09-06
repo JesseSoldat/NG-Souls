@@ -11,7 +11,7 @@ let DashService = function($firebaseArray, $state, $firebaseObject){
 	}
 
 	function fileUpload(file, uploader){
-		console.log(uploader);
+		
 		let user = firebase.auth().currentUser;
 		let storageRef = firebase.storage().ref();
 		let fileName = file.name;

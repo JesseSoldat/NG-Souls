@@ -9,7 +9,7 @@ let LoginCtrl = function($scope, $state, LoginService){
 				$state.go('root.dash');
 			}
 			else {
-				console.log('No User Login Function');
+			
 			}
 		})
 	}
@@ -19,15 +19,7 @@ let LoginCtrl = function($scope, $state, LoginService){
 		LoginService.register(userData);
 	}
 
-	$scope.logout = function(){
-		firebase.auth().signOut().then(function(){
-			console.log('signOut');
-			$state.go('root.login');
-
-		}, function(error){
-			console.log(error);
-		});
-	}
+	
 };
 
 LoginCtrl.$inject = ['$scope', '$state', 'LoginService'];

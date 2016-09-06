@@ -8,14 +8,17 @@ let DashCtrl = function($firebaseArray, $scope, $state, DashService) {
 				if (getBackground.length > 0) {
 					$scope.haveBackground = true;
 					let url = getBackground[0].$value;
-					console.log(url);
+					
 					let img = document.querySelector('#dashBackground2');
-					console.log(img);
+					
 					img.style.backgroundImage = 'url('+url+')';
 					
 
 				} else {
 					$scope.haveBackground = false;
+					let img = document.querySelector('#dashBackground2');
+					let url = '../img/darkSoulsBackground.jpg';
+					img.style.backgroundImage = 'url('+url+')';
 				}
 			});
 

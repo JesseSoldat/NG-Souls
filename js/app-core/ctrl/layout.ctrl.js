@@ -1,13 +1,20 @@
-let LayoutCtrl = function($state){
+let LayoutCtrl = function($state, $scope){
 		firebase.auth().onAuthStateChanged(function(user){
 		if (user) {
 			
 			
 		} else {
-			console.log('No User DashCtrl');
 			$state.go('login');
 		}
 	});
+	$scope.logout = function(){
+		firebase.auth().signOut().then(function(){
+			$state.go('login');
+
+		}, function(error){
+			console.log(error);
+		});
+	}
 };
-LayoutCtrl.$inject = ['$state'];
+LayoutCtrl.$inject = ['$state', '$scope'];
 export default LayoutCtrl;

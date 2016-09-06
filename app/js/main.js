@@ -309,12 +309,15 @@ var DashCtrl = function DashCtrl($firebaseArray, $scope, $state, DashService) {
 					if (getBackground.length > 0) {
 						$scope.haveBackground = true;
 						var url = getBackground[0].$value;
-						console.log(url);
+
 						var img = document.querySelector('#dashBackground2');
-						console.log(img);
+
 						img.style.backgroundImage = 'url(' + url + ')';
 					} else {
 						$scope.haveBackground = false;
+						var img = document.querySelector('#dashBackground2');
+						var url = '../img/darkSoulsBackground.jpg';
+						img.style.backgroundImage = 'url(' + url + ')';
 					}
 				});
 			})();
@@ -357,15 +360,21 @@ module.exports = exports['default'];
 Object.defineProperty(exports, '__esModule', {
 	value: true
 });
-var LayoutCtrl = function LayoutCtrl($state) {
+var LayoutCtrl = function LayoutCtrl($state, $scope) {
 	firebase.auth().onAuthStateChanged(function (user) {
 		if (user) {} else {
-			console.log('No User DashCtrl');
 			$state.go('login');
 		}
 	});
+	$scope.logout = function () {
+		firebase.auth().signOut().then(function () {
+			$state.go('login');
+		}, function (error) {
+			console.log(error);
+		});
+	};
 };
-LayoutCtrl.$inject = ['$state'];
+LayoutCtrl.$inject = ['$state', '$scope'];
 exports['default'] = LayoutCtrl;
 module.exports = exports['default'];
 
@@ -384,24 +393,13 @@ var LoginCtrl = function LoginCtrl($scope, $state, LoginService) {
 		firebase.auth().onAuthStateChanged(function (user) {
 			if (user) {
 				$state.go('root.dash');
-			} else {
-				console.log('No User Login Function');
-			}
+			} else {}
 		});
 	};
 
 	$scope.register = function (userData) {
 
 		LoginService.register(userData);
-	};
-
-	$scope.logout = function () {
-		firebase.auth().signOut().then(function () {
-			console.log('signOut');
-			$state.go('root.login');
-		}, function (error) {
-			console.log(error);
-		});
 	};
 };
 
@@ -602,7 +600,7 @@ var DashService = function DashService($firebaseArray, $state, $firebaseObject) 
 	}
 
 	function fileUpload(file, uploader) {
-		console.log(uploader);
+
 		var user = firebase.auth().currentUser;
 		var storageRef = firebase.storage().ref();
 		var fileName = file.name;
