@@ -2,7 +2,6 @@ let LayoutCtrl = function($state, $scope){
 		firebase.auth().onAuthStateChanged(function(user){
 		if (user) {
 			
-			
 		} else {
 			$state.go('login');
 		}

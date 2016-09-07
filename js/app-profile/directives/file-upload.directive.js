@@ -25,11 +25,8 @@ let fileUpload = function(ProfileService){
 			element.on('click', function(){
 				submitBtn = document.querySelector('#addPhotosBtn');
 				let uploader = document.getElementById('uploader');
-
-
 			});
-			element.on('submit', function(){
-				
+			element.on('submit', function(){	
 				let file = element.find('input')[0].files[0];
 				submitBtn.disabled = true;
 				ProfileService.fileUpload(file, scope.type, uploader)

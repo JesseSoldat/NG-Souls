@@ -10,7 +10,6 @@ let DashService = function($firebaseArray, $state, $firebaseObject){
 	}
 
 	function fileUpload(file, uploader){
-		
 		let user = firebase.auth().currentUser;
 		let storageRef = firebase.storage().ref();
 		let fileName = file.name;
@@ -53,10 +52,8 @@ let DashService = function($firebaseArray, $state, $firebaseObject){
 			    case 'storage/unknown':
 			      // Unknown error occurred, inspect the server response
 			      break;
-			  }
-			 
+			  }		 
 		});
-
 	}
 
 };

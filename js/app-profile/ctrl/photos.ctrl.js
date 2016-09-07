@@ -11,6 +11,10 @@ let PhotosCtrl = function($scope, ProfileService, $state){
 			let fileArray = [];
 			let urlArray = [];
 
+			//TEST------------------------------------------------
+			let objArray = [];
+			//TEST------------------------------------------------
+
 			// Create an Array of files URLs to download from the Database img section
 			
 			photos.$loaded().then(function(){
@@ -24,27 +28,32 @@ let PhotosCtrl = function($scope, ProfileService, $state){
 
 				function buildUrlArray(){
 					for(let i = 0; i < fileArray.length; i++){
-
 						storageRef.child(user.uid + '/photos/' + fileArray[i]).getDownloadURL().then(function(url){
 							urlArray.push(url);
+
+							//TEST---------------------------------------------
+							let obj ={};
+							obj.url = url;
+							obj.name =fileArray[i];
+							objArray.push(obj);
+							//TEST--------------------------------------------
+
 							$scope.$apply(function(){
 								$scope.url = urlArray;
-
-							})
-						})
-
+								$scope.nameUrl = objArray;
+								console.log(objArray);
+							});
+						});
 					}
-							
-
 				}
 			});
 		} else {
 
 		}
-	}) 
+	}); 
 
 	$scope.singlePhoto = function(url){
-		// console.log(url);
+		console.log(url);
 		$state.go('root.photo', {myParam: {url: url}})
 	}
 

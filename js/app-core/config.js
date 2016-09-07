@@ -36,7 +36,7 @@ let config = function($stateProvider, $urlRouterProvider){
 			resolve: {
 				simpleObj:  function(){
             		return {value: 'simple!'};
-         		},
+         		}, 
          		bossesLoaded: function($firebaseArray){
      				let ref = firebase.database().ref('bosses');
 					let array = $firebaseArray(ref);

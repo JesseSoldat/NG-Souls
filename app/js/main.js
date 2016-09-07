@@ -303,7 +303,8 @@ var ChatCtrl = function ChatCtrl($scope, ChatService) {
 	$scope.addMessage = function () {
 		$scope.messages.$add({
 			from: $scope.user,
-			content: $scope.message
+			content: $scope.message,
+			timestamp: firebase.database.ServerValue.TIMESTAMP
 		});
 		//reset the message input
 		$scope.message = '';
@@ -312,10 +313,11 @@ var ChatCtrl = function ChatCtrl($scope, ChatService) {
 	//if there are no messages
 	$scope.messages.$loaded(function () {
 		if ($scope.messages.length === 0) {
-			console.log('no messages');
+
 			$scope.messages.$add({
 				from: 'JLab Inc.',
-				content: 'Enjoy chatting!'
+				content: 'Enjoy chatting!',
+				timestamp: firebase.database.ServerValue.TIMESTAMP
 			});
 		}
 	});
@@ -540,7 +542,6 @@ var dashUpload = function dashUpload(DashService) {
 				DashService.fileUpload(file, uploader);
 			});
 		}
-
 	};
 };
 dashUpload.$inject = ['DashService'];
@@ -655,7 +656,6 @@ var DashService = function DashService($firebaseArray, $state, $firebaseObject) 
 	}
 
 	function fileUpload(file, uploader) {
-
 		var user = firebase.auth().currentUser;
 		var storageRef = firebase.storage().ref();
 		var fileName = file.name;
@@ -779,12 +779,20 @@ var PhotoCtrl = function PhotoCtrl($scope, ProfileService, $stateParams, $state)
 		$state.go('root.photos');
 	} else {
 		(function () {
+			var storage = firebase.storage();
 			var photoUrl = $stateParams.myParam.url;
-
+			console.log($stateParams.myParam);
+			var httpsRef = storage.refFromURL(photoUrl);
 			$scope.url = photoUrl;
 
 			$scope.deletePhoto = function () {
-				console.log('deleted: ' + photoUrl);
+				// Delete the file
+				httpsRef['delete']().then(function () {
+					// File deleted successfully
+
+				})['catch'](function (error) {
+					// Uh-oh, an error occurred!
+				});
 			};
 		})();
 	}
@@ -817,6 +825,10 @@ var PhotosCtrl = function PhotosCtrl($scope, ProfileService, $state) {
 				var fileArray = [];
 				var urlArray = [];
 
+				//TEST------------------------------------------------
+				var objArray = [];
+				//TEST------------------------------------------------
+
 				// Create an Array of files URLs to download from the Database img section
 
 				photos.$loaded().then(function () {
@@ -829,14 +841,27 @@ var PhotosCtrl = function PhotosCtrl($scope, ProfileService, $state) {
 					buildUrlArray();
 
 					function buildUrlArray() {
-						for (var i = 0; i < fileArray.length; i++) {
-
+						var _loop = function (i) {
 							storageRef.child(user.uid + '/photos/' + fileArray[i]).getDownloadURL().then(function (url) {
 								urlArray.push(url);
+
+								//TEST---------------------------------------------
+								var obj = {};
+								obj.url = url;
+								obj.name = fileArray[i];
+								objArray.push(obj);
+								//TEST--------------------------------------------
+
 								$scope.$apply(function () {
 									$scope.url = urlArray;
+									$scope.nameUrl = objArray;
+									console.log(objArray);
 								});
 							});
+						};
+
+						for (var i = 0; i < fileArray.length; i++) {
+							_loop(i);
 						}
 					}
 				});
@@ -845,7 +870,7 @@ var PhotosCtrl = function PhotosCtrl($scope, ProfileService, $state) {
 	});
 
 	$scope.singlePhoto = function (url) {
-		// console.log(url);
+		console.log(url);
 		$state.go('root.photo', { myParam: { url: url } });
 	};
 };
@@ -919,7 +944,6 @@ var fileUpload = function fileUpload(ProfileService) {
 				var uploader = document.getElementById('uploader');
 			});
 			element.on('submit', function () {
-
 				var file = element.find('input')[0].files[0];
 				submitBtn.disabled = true;
 				ProfileService.fileUpload(file, scope.type, uploader);
@@ -1028,7 +1052,7 @@ var ProfileService = function ProfileService($firebaseArray, $state, $firebaseOb
 		function checkData() {
 			if (array.length > 0) {
 				var item = array.$getRecord(userData.$id);
-				// console.log('Checked Data');
+
 				item.fName = userData.fName;
 				item.lName = userData.lName;
 				item.address = userData.address;
@@ -1037,7 +1061,7 @@ var ProfileService = function ProfileService($firebaseArray, $state, $firebaseOb
 				item.zip = userData.zip;
 				item.country = userData.country;
 				array.$save(item).then(function () {
-					// console.log('Saved Item');
+
 					$state.go('root.profile');
 				});
 			} else {
@@ -1094,12 +1118,11 @@ var ProfileService = function ProfileService($firebaseArray, $state, $firebaseOb
 								break;
 						}
 					}); //getDownloadUrl
-				}); //uploadTask
+				}); //uploadTask		
 			})();
 		} //if
 
 		if (avatar === 'photos') {
-
 			//add a DATABASE RECORD to keep track of users' photos
 			var ref = firebase.database().ref('users/' + user.uid + '/' + avatar);
 			var array = $firebaseArray(ref);
@@ -1107,6 +1130,10 @@ var ProfileService = function ProfileService($firebaseArray, $state, $firebaseOb
 			array.$add({
 				name: fileName
 			});
+
+			//TEST-------------------------------------------------
+
+			//TEST---------------------------------------------------
 
 			//upload the photo to STORAGE
 			var imgRef = storageRef.child(user.uid + '/photos/' + fileName);

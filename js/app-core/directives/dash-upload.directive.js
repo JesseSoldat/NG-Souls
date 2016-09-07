@@ -34,8 +34,6 @@ let dashUpload = function(DashService){
 				DashService.fileUpload(file, uploader);
 			});
 		}
-
-
 	}
 };
 dashUpload.$inject = ['DashService'];

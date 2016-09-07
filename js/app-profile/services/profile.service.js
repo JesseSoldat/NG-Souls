@@ -41,12 +41,13 @@ let ProfileService = function($firebaseArray, $state, $firebaseObject){
 
 		let array = $firebaseArray(ref);
 		
+		
 		checkData();
 
 		function checkData(){
 			if (array.length > 0) {
 				let item = array.$getRecord(userData.$id)
-				// console.log('Checked Data');
+	
 				item.fName = userData.fName;
 				item.lName = userData.lName;
 				item.address = userData.address;
@@ -55,7 +56,7 @@ let ProfileService = function($firebaseArray, $state, $firebaseObject){
 				item.zip = userData.zip;
 				item.country = userData.country;
 				array.$save(item).then(function(){
-					// console.log('Saved Item');
+				
 					$state.go('root.profile');
 				});
 
@@ -72,10 +73,8 @@ let ProfileService = function($firebaseArray, $state, $firebaseObject){
 		let storageRef = firebase.storage().ref();
 		let fileName = file.name;
 
-
 		if (avatar === "avatar") {
 
-		
 			let ext = fileName.substring(fileName.lastIndexOf(".")+1).toLowerCase();
 
 			let avatarRef = storageRef.child(user.uid + '/avatar/' + 'avatar.' +ext);
@@ -116,17 +115,12 @@ let ProfileService = function($firebaseArray, $state, $firebaseObject){
 				    case 'storage/unknown':
 				      // Unknown error occurred, inspect the server response
 				      break;
-				  }
-				 
+				  } 
 				});//getDownloadUrl
-
-			});//uploadTask
-
-				
+			});//uploadTask		
 		} //if
 
-		if (avatar === 'photos') {
-		
+		if (avatar === 'photos') {	
 			//add a DATABASE RECORD to keep track of users' photos
 			let ref = firebase.database().ref('users/' +user.uid+ '/'+avatar);
 			let array = $firebaseArray(ref);
@@ -135,6 +129,11 @@ let ProfileService = function($firebaseArray, $state, $firebaseObject){
 				name: fileName
 			});
 
+			//TEST-------------------------------------------------
+
+
+			//TEST---------------------------------------------------
+			
 			//upload the photo to STORAGE
 			let imgRef = storageRef.child(user.uid + '/photos/' +fileName);
 			let uploadTask = imgRef.put(file);
@@ -151,7 +150,6 @@ let ProfileService = function($firebaseArray, $state, $firebaseObject){
 				}
 			);
 		}
-
 	}
 
 	function getAvatar(user){	
@@ -160,7 +158,6 @@ let ProfileService = function($firebaseArray, $state, $firebaseObject){
 		let array = $firebaseArray(ref);
 		
 		return array;
-
 	}
 
 	function getPhotos(){
@@ -169,7 +166,6 @@ let ProfileService = function($firebaseArray, $state, $firebaseObject){
 		let array = $firebaseArray(ref);
 		
 		return array;
-
 	}
 
 };

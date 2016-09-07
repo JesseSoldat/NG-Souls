@@ -7,7 +7,8 @@ let ChatCtrl = function($scope, ChatService){
 	$scope.addMessage = function(){
 		$scope.messages.$add({
 			from: $scope.user,
-			content: $scope.message
+			content: $scope.message,
+			timestamp: firebase.database.ServerValue.TIMESTAMP
 		});
 		//reset the message input
 		$scope.message = '';
@@ -16,10 +17,11 @@ let ChatCtrl = function($scope, ChatService){
 	//if there are no messages
 	$scope.messages.$loaded(function(){
 		if($scope.messages.length === 0){
-			console.log('no messages');
+
 			$scope.messages.$add({
 				from: 'JLab Inc.',
-				content: 'Enjoy chatting!'
+				content: 'Enjoy chatting!',
+				timestamp: firebase.database.ServerValue.TIMESTAMP
 			});
 		}
 	});

@@ -23,7 +23,7 @@ let LoginCtrl = function($scope, $state, LoginService){
 	}
 
 	$scope.register = function(userData) {
-
+		
 		LoginService.register(userData);
 	}
 
