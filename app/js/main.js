@@ -772,24 +772,48 @@ module.exports = exports['default'];
 Object.defineProperty(exports, '__esModule', {
 	value: true
 });
-var PhotoCtrl = function PhotoCtrl($scope, ProfileService, $stateParams, $state) {
+var PhotoCtrl = function PhotoCtrl($scope, ProfileService, $stateParams, $state, $firebaseObject) {
 
 	//When you refresh the page there will be no params saved
 	if ($stateParams.myParam === null) {
 		$state.go('root.photos');
 	} else {
 		(function () {
+
 			var storage = firebase.storage();
 			var photoUrl = $stateParams.myParam.url;
-			console.log($stateParams.myParam);
+
 			var httpsRef = storage.refFromURL(photoUrl);
 			$scope.url = photoUrl;
 
 			$scope.deletePhoto = function () {
-				// Delete the file
-				httpsRef['delete']().then(function () {
-					// File deleted successfully
+				var user = firebase.auth().currentUser;
 
+				//Delete the Database REF first
+				// Create a reference to the file whose metadata we want to retrieve
+				var customMeta = storage.refFromURL(photoUrl);
+
+				// Get metadata properties
+				customMeta.getMetadata().then(function (metadata) {
+
+					var metaId = metadata.customMetadata.id;
+
+					var ref = firebase.database().ref('users/' + user.uid + '/photos/' + metaId);
+					var tempUrl = 'users/' + user.uid + '/photos/' + metaId;
+
+					var obj = $firebaseObject(ref);
+					obj.$remove().then(function (ref) {
+						$state.go('root.photos');
+					}, function (error) {
+						console.log("Error:", error);
+					});
+					// Delete the file from STORAGE
+					httpsRef['delete']().then(function () {
+						// File deleted successfully
+
+					})['catch'](function (error) {
+						// Uh-oh, an error occurred!
+					});
 				})['catch'](function (error) {
 					// Uh-oh, an error occurred!
 				});
@@ -800,7 +824,7 @@ var PhotoCtrl = function PhotoCtrl($scope, ProfileService, $stateParams, $state)
 		$state.go(state);
 	};
 };
-PhotoCtrl.$inject = ['$scope', 'ProfileService', '$stateParams', '$state'];
+PhotoCtrl.$inject = ['$scope', 'ProfileService', '$stateParams', '$state', '$firebaseObject'];
 
 exports['default'] = PhotoCtrl;
 module.exports = exports['default'];
@@ -855,7 +879,7 @@ var PhotosCtrl = function PhotosCtrl($scope, ProfileService, $state) {
 								$scope.$apply(function () {
 									$scope.url = urlArray;
 									$scope.nameUrl = objArray;
-									console.log(objArray);
+									// console.log(objArray);
 								});
 							});
 						};
@@ -870,7 +894,6 @@ var PhotosCtrl = function PhotosCtrl($scope, ProfileService, $state) {
 	});
 
 	$scope.singlePhoto = function (url) {
-		console.log(url);
 		$state.go('root.photo', { myParam: { url: url } });
 	};
 };
@@ -939,14 +962,22 @@ var fileUpload = function fileUpload(ProfileService) {
 		template: '\n\t\t<div>\n\t\t\t<form>\n\t\t\t\t<div id="fileUploadControls">\n\t\t\t\t\t<progress class="fileUploadProgress" value="0" max="100" id="uploader">0%</progress>\n\t\t\t\t\t<input class="fileUploadInput" type="file"\n\t\t\t\t\t\t\tname="img"\n\t\t\t\t\t\t\taccept="image/*"\n\t\t\t\t\t\t\tng-model="image.one"\n\t\t\t\t\t\t\tplaceholder="Choose a File"\n\t\t\t\t\t/>\n\t\t\t\t</div>\n\t\t\t\t<button class="small button" id="addPhotosBtn">Upload</button>\n\t\t\t</form>\n\t\t</div>\n\t\t',
 		link: function link(scope, element, attrs, ctrl) {
 			var submitBtn = undefined;
+
 			element.on('click', function () {
 				submitBtn = document.querySelector('#addPhotosBtn');
 				var uploader = document.getElementById('uploader');
 			});
 			element.on('submit', function () {
 				var file = element.find('input')[0].files[0];
-				submitBtn.disabled = true;
-				ProfileService.fileUpload(file, scope.type, uploader);
+
+				if (file) {
+					console.log('have file');
+					submitBtn.disabled = true;
+					ProfileService.fileUpload(file, scope.type, uploader);
+				} else {
+					console.log('no file');
+					return;
+				}
 			});
 		}
 
@@ -1123,28 +1154,48 @@ var ProfileService = function ProfileService($firebaseArray, $state, $firebaseOb
 		} //if
 
 		if (avatar === 'photos') {
-			//add a DATABASE RECORD to keep track of users' photos
-			var ref = firebase.database().ref('users/' + user.uid + '/' + avatar);
-			var array = $firebaseArray(ref);
+			(function () {
+				//add a DATABASE RECORD to keep track of users' photos
+				var ref = firebase.database().ref('users/' + user.uid + '/' + avatar);
+				var array = $firebaseArray(ref);
+				array.$add({
+					name: fileName
+				});
 
-			array.$add({
-				name: fileName
-			});
+				var id = undefined;
+				var metadata = undefined;
+				array.$loaded().then(function () {
+					//get the last photo added
+					var length = array.length;
+					var current = length - 1;
+					//get the database id for the photo
+					id = array.$keyAt(current);
+					//create meta data to store with the photo on the STORAGE
+					var metadata = {
+						customMetadata: {
+							'id': id
+						}
+					};
 
-			//TEST-------------------------------------------------
+					//upload the photo to STORAGE
+					var imgRef = storageRef.child(user.uid + '/photos/' + fileName);
 
-			//TEST---------------------------------------------------
+					var uploadTask = imgRef.put(file, metadata);
 
-			//upload the photo to STORAGE
-			var imgRef = storageRef.child(user.uid + '/photos/' + fileName);
-			var uploadTask = imgRef.put(file);
+					uploadTask.on('state_changed', function progress(snapshot) {
+						var percent = snapshot.bytesTransferred / snapshot.totalBytes * 100;
+						uploader.value = percent;
+					}, function error(err) {}, function complete() {
+						//$stateParams.myParam === null so will be routed back to root.photos with the new photo.
+						$state.go('root.photo');
+					});
+				});
 
-			uploadTask.on('state_changed', function progress(snapshot) {
-				var percent = snapshot.bytesTransferred / snapshot.totalBytes * 100;
-				uploader.value = percent;
-			}, function error(err) {}, function complete() {
-				$state.go('root.photos');
-			});
+				//TEST-------------------------------------------------
+				var obj = $firebaseObject(ref);
+
+				//TEST---------------------------------------------------
+			})();
 		}
 	}
 

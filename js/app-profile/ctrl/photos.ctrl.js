@@ -41,7 +41,7 @@ let PhotosCtrl = function($scope, ProfileService, $state){
 							$scope.$apply(function(){
 								$scope.url = urlArray;
 								$scope.nameUrl = objArray;
-								console.log(objArray);
+								// console.log(objArray);
 							});
 						});
 					}
@@ -53,7 +53,6 @@ let PhotosCtrl = function($scope, ProfileService, $state){
 	}); 
 
 	$scope.singlePhoto = function(url){
-		console.log(url);
 		$state.go('root.photo', {myParam: {url: url}})
 	}
 

@@ -124,19 +124,29 @@ let ProfileService = function($firebaseArray, $state, $firebaseObject){
 			//add a DATABASE RECORD to keep track of users' photos
 			let ref = firebase.database().ref('users/' +user.uid+ '/'+avatar);
 			let array = $firebaseArray(ref);
-
 			array.$add({
-				name: fileName
+				name: fileName,
 			});
 
-			//TEST-------------------------------------------------
-
-
-			//TEST---------------------------------------------------
+			let id;
+			let metadata;
+			array.$loaded().then(function(){
+				//get the last photo added
+				let length = array.length;
+				let current = length - 1;
+				//get the database id for the photo
+				id = array.$keyAt(current);
+				//create meta data to store with the photo on the STORAGE
+				let metadata = {
+				  customMetadata: {
+				    'id': id
+				  }
+				}
 			
 			//upload the photo to STORAGE
 			let imgRef = storageRef.child(user.uid + '/photos/' +fileName);
-			let uploadTask = imgRef.put(file);
+		
+			let uploadTask = imgRef.put(file, metadata);
 
 			uploadTask.on('state_changed',
 				function progress(snapshot){
@@ -146,9 +156,23 @@ let ProfileService = function($firebaseArray, $state, $firebaseObject){
 				function error(err){
 				},
 				function complete(){
-					$state.go('root.photos');
+					//$stateParams.myParam === null so will be routed back to root.photos with the new photo. 
+					$state.go('root.photo');
 				}
 			);
+
+			
+
+			});
+				
+			//TEST-------------------------------------------------
+			let obj = $firebaseObject(ref);
+
+			
+
+			//TEST---------------------------------------------------
+			
+			
 		}
 	}
 

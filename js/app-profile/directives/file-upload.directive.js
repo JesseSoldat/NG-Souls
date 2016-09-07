@@ -22,14 +22,25 @@ let fileUpload = function(ProfileService){
 		`,
 		link: function(scope, element, attrs, ctrl){
 			let submitBtn
+
 			element.on('click', function(){
 				submitBtn = document.querySelector('#addPhotosBtn');
 				let uploader = document.getElementById('uploader');
+				
 			});
 			element.on('submit', function(){	
 				let file = element.find('input')[0].files[0];
-				submitBtn.disabled = true;
-				ProfileService.fileUpload(file, scope.type, uploader)
+				
+				if (file) {
+					console.log('have file');
+					submitBtn.disabled = true;
+					ProfileService.fileUpload(file, scope.type, uploader)
+
+				} else {
+					console.log('no file');
+					return
+				}
+				
 			});
 		}
 
