@@ -22,16 +22,23 @@ let dashUpload = function(DashService){
 		`,
 		link: function(scope, element, attrs, ctrl){
 
-			let uploader
+			let uploader;
 			let submitBtn;
 			element.on('click', function(){
 				submitBtn = document.querySelector('#addPhotosBtn');
 				uploader = document.getElementById('dashUploader');
 			});
-			element.on('submit', function(){	
+			element.on('submit', function(){
 				let file = element.find('input')[0].files[0];
-				submitBtn.disabled = true;
-				DashService.fileUpload(file, uploader);
+				if(file){
+					console.log('have file');
+					submitBtn.disabled = true;
+					DashService.fileUpload(file, uploader);
+				} else {
+					console.log('no file');
+					return
+				}	
+				
 			});
 		}
 	}

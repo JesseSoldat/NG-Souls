@@ -7,8 +7,6 @@ import './app-core/index';
 import './app-profile/index';
 import './app-bosses/index';
 
-
-
 var fireConfig = {
     apiKey: "AIzaSyAw5uIZdlyPYjBuYoc8zRjbiv0-lxWANys",
     authDomain: "playground-3f11f.firebaseapp.com",

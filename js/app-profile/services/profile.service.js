@@ -41,7 +41,6 @@ let ProfileService = function($firebaseArray, $state, $firebaseObject){
 
 		let array = $firebaseArray(ref);
 		
-		
 		checkData();
 
 		function checkData(){
@@ -67,7 +66,8 @@ let ProfileService = function($firebaseArray, $state, $firebaseObject){
 			}
 		}
 	}
-
+	//avatar is the attribute of type on the directive which is either the string avatar or photo
+	//uploader is the progress bar in the directive
 	function fileUpload(file, avatar, uploader) {	
 		let user = firebase.auth().currentUser;
 		let storageRef = firebase.storage().ref();
@@ -96,6 +96,7 @@ let ProfileService = function($firebaseArray, $state, $firebaseObject){
 					let obj = $firebaseObject(ref);
 					obj.url = url;
 					obj.$save().then(function(ref) {
+						console.log(ref.key); //should equal avatar
 					  ref.key === obj.$id; // true
 					  $state.go('root.profile');
 				}, function(error) {
@@ -126,14 +127,20 @@ let ProfileService = function($firebaseArray, $state, $firebaseObject){
 			let array = $firebaseArray(ref);
 			array.$add({
 				name: fileName,
+			//get the id of where the DATABASE RECORD is stored
+			}).then(function(ref){
+				let refId = ref.key;
+				// console.log(refId);
+				let index = array.$indexFor(refId);
+				// console.log(index);
 			});
-
+			//Current working solution 
 			let id;
 			let metadata;
 			array.$loaded().then(function(){
 				//get the last photo added
-				let length = array.length;
-				let current = length - 1;
+				let length = array.length; //example length of 6
+				let current = length - 1; //0-5 index = 5
 				//get the database id for the photo
 				id = array.$keyAt(current);
 				//create meta data to store with the photo on the STORAGE
@@ -142,37 +149,25 @@ let ProfileService = function($firebaseArray, $state, $firebaseObject){
 				    'id': id
 				  }
 				}
+				//upload the photo to STORAGE
+				let imgRef = storageRef.child(user.uid + '/photos/' +fileName);
 			
-			//upload the photo to STORAGE
-			let imgRef = storageRef.child(user.uid + '/photos/' +fileName);
-		
-			let uploadTask = imgRef.put(file, metadata);
+				let uploadTask = imgRef.put(file, metadata);
 
-			uploadTask.on('state_changed',
-				function progress(snapshot){
-					let percent = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-					uploader.value = percent;
-				},
-				function error(err){
-				},
-				function complete(){
-					//$stateParams.myParam === null so will be routed back to root.photos with the new photo. 
-					$state.go('root.photo');
-				}
-			);
+				uploadTask.on('state_changed',
+					function progress(snapshot){
+						let percent = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+						uploader.value = percent;
+					},
+					function error(err){
+					},
+					function complete(){
+						//$stateParams.myParam === null so will be routed back to root.photos with the new photo. 
+						$state.go('root.photo');
+					}
+				);
 
-			
-
-			});
-				
-			//TEST-------------------------------------------------
-			let obj = $firebaseObject(ref);
-
-			
-
-			//TEST---------------------------------------------------
-			
-			
+			}); //array.$loaded()
 		}
 	}
 

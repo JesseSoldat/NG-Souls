@@ -426,6 +426,25 @@ var LoginCtrl = function LoginCtrl($scope, $state, LoginService) {
 
 		LoginService.register(userData);
 	};
+
+	$scope.facebookLogin = function () {
+		var provider = new firebase.auth.FacebookAuthProvider();
+		firebase.auth().signInWithPopup(provider).then(function (result) {
+			// This gives you a Facebook Access Token. You can use it to access the Facebook API.
+			console.log(result);
+			var token = result.credential.accessToken;
+			// The signed-in user info.
+			var user = result.user;
+		})['catch'](function (error) {
+			var errorCode = error.code;
+			var errorMessage = error.message;
+			// The email of the user's account used.
+			var email = error.email;
+			// The firebase.auth.AuthCredential type that was used.
+			var credential = error.credential;
+			// ...
+		});
+	}; //facebookLogin
 };
 
 LoginCtrl.$inject = ['$scope', '$state', 'LoginService'];
@@ -538,8 +557,14 @@ var dashUpload = function dashUpload(DashService) {
 			});
 			element.on('submit', function () {
 				var file = element.find('input')[0].files[0];
-				submitBtn.disabled = true;
-				DashService.fileUpload(file, uploader);
+				if (file) {
+					console.log('have file');
+					submitBtn.disabled = true;
+					DashService.fileUpload(file, uploader);
+				} else {
+					console.log('no file');
+					return;
+				}
 			});
 		}
 	};
@@ -779,27 +804,32 @@ var PhotoCtrl = function PhotoCtrl($scope, ProfileService, $stateParams, $state,
 		$state.go('root.photos');
 	} else {
 		(function () {
-
-			var storage = firebase.storage();
+			//grab the url passed from photos ctrl
 			var photoUrl = $stateParams.myParam.url;
 
-			var httpsRef = storage.refFromURL(photoUrl);
+			//display the single photo in our view
 			$scope.url = photoUrl;
 
+			var storage = firebase.storage();
+
+			//used to point to the REAL file in STORAGE
+			var httpsRef = storage.refFromURL(photoUrl);
+
 			$scope.deletePhoto = function () {
+				//Get the current user object
 				var user = firebase.auth().currentUser;
 
-				//Delete the Database REF first
+				//Delete the Database REF first----------------------------------
 				// Create a reference to the file whose metadata we want to retrieve
 				var customMeta = storage.refFromURL(photoUrl);
 
 				// Get metadata properties
 				customMeta.getMetadata().then(function (metadata) {
 
-					var metaId = metadata.customMetadata.id;
+					var metaId = metadata.customMetadata.id; //the key to the object that we want to delete example -KR3N89OhedWqtuLSVwT
 
+					//point to the object in the array that we want to delete this is in the DATABASE and just holds the URL for the image in STORAGE
 					var ref = firebase.database().ref('users/' + user.uid + '/photos/' + metaId);
-					var tempUrl = 'users/' + user.uid + '/photos/' + metaId;
 
 					var obj = $firebaseObject(ref);
 					obj.$remove().then(function (ref) {
@@ -807,21 +837,18 @@ var PhotoCtrl = function PhotoCtrl($scope, ProfileService, $stateParams, $state,
 					}, function (error) {
 						console.log("Error:", error);
 					});
-					// Delete the file from STORAGE
+					// Delete the REAL file from STORAGE
 					httpsRef['delete']().then(function () {
 						// File deleted successfully
 
-					})['catch'](function (error) {
-						// Uh-oh, an error occurred!
-					});
-				})['catch'](function (error) {
-					// Uh-oh, an error occurred!
-				});
+					})['catch'](function (error) {});
+				})['catch'](function (error) {});
 			};
 		})();
 	}
 	$scope.goBack = function (state) {
 		$state.go(state);
+		//state is 'root.photos'
 	};
 };
 PhotoCtrl.$inject = ['$scope', 'ProfileService', '$stateParams', '$state', '$firebaseObject'];
@@ -1102,7 +1129,8 @@ var ProfileService = function ProfileService($firebaseArray, $state, $firebaseOb
 			}
 		}
 	}
-
+	//avatar is the attribute of type on the directive which is either the string avatar or photo
+	//uploader is the progress bar in the directive
 	function fileUpload(file, avatar, uploader) {
 		var user = firebase.auth().currentUser;
 		var storageRef = firebase.storage().ref();
@@ -1128,6 +1156,7 @@ var ProfileService = function ProfileService($firebaseArray, $state, $firebaseOb
 						var obj = $firebaseObject(ref);
 						obj.url = url;
 						obj.$save().then(function (ref) {
+							console.log(ref.key); //should equal avatar
 							ref.key === obj.$id; // true
 							$state.go('root.profile');
 						}, function (error) {
@@ -1160,14 +1189,20 @@ var ProfileService = function ProfileService($firebaseArray, $state, $firebaseOb
 				var array = $firebaseArray(ref);
 				array.$add({
 					name: fileName
+				}). //get the id of where the DATABASE RECORD is stored
+				then(function (ref) {
+					var refId = ref.key;
+					// console.log(refId);
+					var index = array.$indexFor(refId);
+					// console.log(index);
 				});
-
+				//Current working solution
 				var id = undefined;
 				var metadata = undefined;
 				array.$loaded().then(function () {
 					//get the last photo added
-					var length = array.length;
-					var current = length - 1;
+					var length = array.length; //example length of 6
+					var current = length - 1; //0-5 index = 5
 					//get the database id for the photo
 					id = array.$keyAt(current);
 					//create meta data to store with the photo on the STORAGE
@@ -1176,7 +1211,6 @@ var ProfileService = function ProfileService($firebaseArray, $state, $firebaseOb
 							'id': id
 						}
 					};
-
 					//upload the photo to STORAGE
 					var imgRef = storageRef.child(user.uid + '/photos/' + fileName);
 
@@ -1189,12 +1223,7 @@ var ProfileService = function ProfileService($firebaseArray, $state, $firebaseOb
 						//$stateParams.myParam === null so will be routed back to root.photos with the new photo.
 						$state.go('root.photo');
 					});
-				});
-
-				//TEST-------------------------------------------------
-				var obj = $firebaseObject(ref);
-
-				//TEST---------------------------------------------------
+				}); //array.$loaded()
 			})();
 		}
 	}
